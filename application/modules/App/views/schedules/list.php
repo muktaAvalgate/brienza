@@ -1,0 +1,79 @@
+<div class="subnav">
+	<div class="container-fluid">
+    	<h1><span class="glyphicon glyphicon-calendar"></span> Manage Schedules</h1>
+
+        <div id="sub-menu" class="pull-right">
+        	<ul class="nav nav-pills">
+				<li class="active"><a href="<?php echo base_url('app/schedules');?>"><span class="glyphicon glyphicon-calendar"></span> Schedules</a></li>
+				<li><a href="<?php echo base_url('app/schedules/add');?>"><span class="glyphicon glyphicon-plus-sign"></span> Add New Schedule</a></li>
+			</ul>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid main">
+	<ol class="breadcrumb">
+		<li><a href="<?php echo base_url('dashboard');?>">Dashboard</a></li>
+		<li class="active">Schedule Management</li>
+	</ol>
+
+	<?php
+		if($this->session->flashdata('message_type')) {
+			if($this->session->flashdata('message')) {
+				echo '<div class="alert alert-'.$this->session->flashdata('message_type').' alert-dismissable">';
+				echo '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+				echo $this->session->flashdata('message');
+				echo '</div>';
+			}
+		}
+	?>
+
+	<?php
+		echo validation_errors();
+
+		$attributes = array('class' => 'form-inline status-form', 'id' => 'product-status-form');
+		echo form_open(base_url('app/schedules/update_status'), $attributes);
+	?>
+
+	<div class="table-responsive">
+		<!-- Table -->
+	    <table class="table table-striped table-responsive" width="100%">
+	    	<thead>
+	    		<tr>
+	          		<th><input type="checkbox" id="checkall"></th>
+	          		<th>Name</th>
+	          		<th>Created</th>
+					<th>Updated</th>
+	          		<th>Action</th
+	          	</tr>
+	        </thead>
+	        <tbody>
+	            <?php if (count($list) == 0) { ?>
+	            <tr>
+	            	<td colspan="100%">Sorry!! No Records found.</td>
+	            </tr>
+	            <?php } ?>
+	            <?php foreach($list as $item) { ?>
+	            <tr>
+	            	<td><input type="checkbox" name="item_id[<?php echo $item->id;?>]" class="checkbox-item" value="Y"></td>
+					<td><?php echo $item->name;?></td>
+					<td><small>On <?php echo datetime_display($item->created_on);?> By <?php echo $item->created_by_name;?></small></td>
+					<td><small><?php if($item->updated_on) {?>On <?php echo datetime_display($item->updated_on);?> By <?php echo $item->updated_by_name;?><?php }?></small></td>
+					<td class="text-nowrap"><?php echo render_action(array('edit', 'delete'), $item->id);?></td>
+	            </tr>
+	            <?php } ?>
+	        </tbody>
+			<tfoot>
+				<tr>
+                	<td colspan="8">
+						<?php echo render_buttons(array('delete'));?>
+					</td>
+				</tr>
+			</tfoot>
+	    </table>
+	</div>
+	<?php echo form_close();?>
+
+	<?php echo $this->pagination->create_links(); ?>
+</div>
+

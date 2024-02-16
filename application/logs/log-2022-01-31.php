@@ -1,0 +1,41 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2022-01-31 07:24:55 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:25:14 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:25:20 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:25:23 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:25:36 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:26:40 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:26:46 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:26:48 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:26:59 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:01 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:09 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:14 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:17 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:27 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:31 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:35 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:45 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:49 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:27:57 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:00 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:20 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:23 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:26 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:29 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:51 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:28:55 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:00 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:03 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:12 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:15 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:25 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:26 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:29:55 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 02:30:00 --> Severity: Notice --> Undefined variable: total_new_schedule_hour /home/wyktsmhg/public_html/baasolutionsonline.east-coast-developer.pro/application/modules/Auth/views/dashboard.php 756
+ERROR - 2022-01-31 07:30:02 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:30:05 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:30:13 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:30:35 --> 404 Page Not Found: /index
+ERROR - 2022-01-31 07:31:08 --> 404 Page Not Found: /index

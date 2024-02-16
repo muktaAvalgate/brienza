@@ -1,0 +1,6 @@
+__ci_last_regenerate|i:1490674304;id|s:1:"6";name|s:13:"Sukhamoy Deb ";email|s:23:"keepfaithdear@gmail.com";last_login|s:21:"03/27/2017 - 02:40 pm";role|s:9:"bar_admin";permissions|a:8:{i:0;s:13:"App.Bars.Edit";i:1;s:13:"App.Bars.View";i:2;s:15:"App.Bars.Redeem";i:3;s:14:"App.Bars.Promo";i:4;s:13:"App.Bars.Push";i:5;s:14:"App.Bars.Stats";i:6;s:18:"App.Bars.Dashboard";i:7;s:12:"App.Bars.Own";}navmenu|s:464:"<li><a href="http://localhost/une/dashboard" title="">Home</a></li>
+<li class="dropdown"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="">Application <span class="caret"></span></a>
+<ul class="dropdown-menu"><li><a href="http://localhost/une/bar/bars/own_bars" title="">Bars</a></li>
+</ul></li>
+<li><a href="http://localhost/une/report/reports/index" title="">Reports</a></li>
+";is_logged_in|b:1;
