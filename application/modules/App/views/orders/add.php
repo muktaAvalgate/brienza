@@ -182,10 +182,10 @@
 			</div>
 		    <div class="modal-footer">
 				<input type="hidden" name="title_id" id="title_id">
-				<input type="hidden" name="hour" id="hour">
+				<input type="text" name="hour" id="hour">
 				<input type="hidden" name="booking_date" id="booking_date">
 				<input type="hidden" name="presenter_id" id="presenter_id">
-				<input type="hidden" name="coordinator_id" id="coordinator_id2">
+				<input type="text" name="coordinator_id" id="coordinator_id2">
 				<input type="hidden" name="school_id" id="school_id">
 				<input type="hidden" name="session_id" id="hdn_session_id">
 				<input type="hidden" name="program_id" id="program_value">
@@ -266,6 +266,7 @@
 
 		$('#coordinator_id').on('change', function(){
 			var co_id = $(this).val();
+			$('#coordinator_id2').val(co_id);
 			var school_id = $('#inputSchool').val();
 			$.ajax({
 	            type:'POST',

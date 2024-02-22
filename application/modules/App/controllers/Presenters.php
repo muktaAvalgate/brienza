@@ -1026,7 +1026,7 @@ class Presenters extends Application_Controller {
             if($this->session->userdata('role') == 'teacher'){
                 // Get the existing schedule
     			$data['schedules'] = $this->App_model->get_order_schedule($order_id, $presenter_id, "order_schedules.id");
-
+				// echo '<pre>';print_r($data['schedules']);die();'</pre>';
 				// // for old grade
 				// if(empty($data['teacher_grades'])){
 				// 	foreach($data['schedules'] as $v){
@@ -1175,7 +1175,8 @@ class Presenters extends Application_Controller {
     				'end_date' => $end_date,
 					'topic_id' => $this->input->post('topics'),
 					// 'topic_id' => $topicId,
-					'type_id' => $this->input->post('types'),
+					'service_type_id' => $this->input->post('types'),
+					// 'type_id' => $this->input->post('types'),
 					'grade_id' => $this->input->post('grades'),
 					// 'grade_id' => $gradeId,
 					'teacher' => htmlspecialchars($this->input->post('teachers'), ENT_QUOTES, 'utf-8'),
@@ -1376,7 +1377,7 @@ class Presenters extends Application_Controller {
 	public function update_scheduling() 
 	{
 		$status = $this->input->post('status');
-		echo '<pre>';print($status);echo '</pre>';
+		// echo '<pre>';print($status);echo '</pre>';
 		$presenter_id 	= $this->session->userdata('id');
 		$presenter_name = $this->App_model->get_presenter_name($presenter_id);
 		// echo '<pre>';print_r($status);die;
@@ -1445,7 +1446,8 @@ class Presenters extends Application_Controller {
 		// echo '<pre>';print_r($school_id);echo '</pre>';die;
 		$schedule_id 	= $this->input->post('order_schedule_id');
 		$topic_id 		= $this->input->post('topics');
-		$type_id		= $this->input->post('types');
+		$type_id		= $this->input->post('updated_types');
+		// echo '<pre>';print($type_id);die;
 		$grade_id		= $this->input->post('grades');
 		$date 			= htmlspecialchars($this->input->post('date'), ENT_QUOTES, 'utf-8');
 		$start_time 	= htmlspecialchars($this->input->post('start_time'), ENT_QUOTES, 'utf-8');
@@ -1581,18 +1583,18 @@ class Presenters extends Application_Controller {
 			'start_date' => $start_date,
 			'end_date' => $end_date,
 			'topic_id' => $this->input->post('topics'),
-			'type_id' => $this->input->post('types'),
+			'service_type_id' => $this->input->post('types'),
 			'grade_id' => $this->input->post('grades'),
 			'teacher' => $teacherName,
 			'total_hours' => htmlspecialchars($this->input->post('total_hours'), ENT_QUOTES, 'utf-8'),
 			'is_public_school' =>$public_school_title->public_school_title_status,
 		);
-
+		// echo "<pre>"; print_r($data);die;
 		$order_number = $this->App_model->get_order_number_formail($order_id);
         // $presenter_name = $this->App_model->get_presenter_name($presenter_id);
 
         $order_schedules = $this->App_model->get_order_schedule_formail($schedule_id);
-        //  echo "<pre>"; print_r($order_schedules);die;
+        echo "<pre>"; print_r($order_schedules);die;
         $time_mail=NULL;
         $grade_teacher_mail=NULL;
         $type_mail=NULL;
@@ -1628,6 +1630,7 @@ class Presenters extends Application_Controller {
             $grade_teacher_mail = "Grade & Teacher - ".$new_grade->name.", ".$teacherName." <i>[Previous value: ".$order_schedules->grades_name.", ".$order_schedules->teacher."]</i>";
         }
         $new_type=$this->App_model->get_worktype_details($this->input->post('types'));
+
         if($order_schedules->type_id != $this->input->post('types')){
             $type_mail = "Type - ".$new_type->name." <i>[Previous value: ".$order_schedules->type_name."]</i>";
         }

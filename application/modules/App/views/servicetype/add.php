@@ -14,7 +14,7 @@
 <div class="container-fluid main">
 	<ol class="breadcrumb">
 		<li><a href="<?php echo base_url('dashboard');?>">Dashboard</a></li>
-		<li><a href="<?php echo base_url('app/categories');?>">Service type</a></li>
+		<li><a href="<?php echo base_url('app/Servicetype');?>">Service type</a></li>
 		<li class="active">Create service type</li>
 	</ol>
 

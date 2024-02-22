@@ -812,6 +812,7 @@ class Orders extends Application_Controller {
 			$title_id = $this->clean_value($this->input->post('title_id'));
 			$presenter_id = $this->clean_value($this->input->post('presenter_id'));
 			$coordinator_id 	= $this->clean_value($this->input->post('coordinator_id'));
+            // echo '<pre>';print($coordinator_id);die;
 			$session_id     = $this->clean_value($this->input->post('session_id'));			
 			$program_id     = $this->clean_value($this->input->post('program_id'));			
 			// Check the title exists
@@ -851,6 +852,7 @@ class Orders extends Application_Controller {
 			$title_id = $this->clean_value($this->input->post('title_id'));
 			$presenter_id = $this->clean_value($this->input->post('presenter_id'));
 			$coordinator_id 	= $this->clean_value($this->input->post('coordinator_id'));
+            // echo '<pre>'; print($coordinator_id);die;
 			$topics = $this->input->post('topics[]');	
 			$session_id = $this->clean_value($this->input->post('session_id'));
             $program_id     = $this->clean_value($this->input->post('program_id'));	
@@ -874,7 +876,7 @@ class Orders extends Application_Controller {
 			
 			// ======== Start Code By Ahmed on 2019-09-21 ======= //
 			$coordinatorData = $this->Admin_model->get_user_details($coordinator_id);
-    		
+    		// echo '<pre>'; print_r($coordinatorData);die;
 			if(!empty($presenter) && isset($presenter->first_name)){
 				$presenter_name = $presenter->first_name." ".$presenter->last_name;
 			}else{
@@ -906,7 +908,13 @@ class Orders extends Application_Controller {
 				'created_by' => $this->session->userdata('id')				
 			);
 			*/
-
+            if(isset($coordinatorData->meta['rate_type']) && isset($coordinatorData->meta['rate'])){
+                $co_rate_type=$coordinatorData->meta['rate_type'];
+                $co_rate=$coordinatorData->meta['rate'];
+            }else{
+                $co_rate_type=null;
+                $co_rate=0;
+            }
 			$data = array(
 				'order_no' 			=> '',
 				'school_id' 		=> $school_id,
@@ -919,8 +927,8 @@ class Orders extends Application_Controller {
 				'status' 			=> 'pending',
 				'created_on' 		=> date('Y-m-d H:i:s'),
 				'created_by' 		=> $this->session->userdata('id'),
-				'co_rate_type'		=> $coordinatorData->meta['rate_type'],
-				'co_rate' 			=> $coordinatorData->meta['rate'],
+                'co_rate_type'		=> $co_rate_type,
+				'co_rate' 			=> $co_rate,
 				'session_id'        => $session_id,
                 
                 'program_id' => $program_id
@@ -928,8 +936,8 @@ class Orders extends Application_Controller {
 
                 
 			);				
-			
-			if ($order_id = $this->Admin_model->insert('orders', $data)) {
+			$order_id = $this->Admin_model->insert('orders', $data);
+			if (!empty($order_id)) {
 				// Insert the Order Topics
 				if (!empty($topics)) {
 					$this->App_model->insert_order_topics($order_id, $topics);

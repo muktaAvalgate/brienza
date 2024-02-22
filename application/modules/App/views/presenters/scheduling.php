@@ -42,7 +42,9 @@
     right: 59px;
     width: 285px;
 } */
-
+.table>tbody>tr>td {
+	width: 12% !important; 
+}
 </style>
 
 
@@ -134,7 +136,7 @@
 							<th>Start Time</th>
 							<th>End Time</th>
 							<th>Topic</th>
-							<th>Type</th>
+							<th>Service Type</th>
 							<th>Grade</th>
 							<th>Teacher</th>
 							<th>Total Hours</th>
@@ -167,11 +169,15 @@
 								</select>
 							</td>
 							<td>
+								<?php if(isset($row->type_id)){ ?>
 								<span class="editSpan types" data-type="<?php echo $row->type_id; ?>"><?php echo $row->worktype_name;?></span>
+								<?php }else{ ?>
+									<span class="editSpan types" data-type="<?php echo $row->service_type_id; ?>"><?php echo $row->name;?></span>
+								<?php } ?>
 								<select name="types" class="form-control editInput types" required  style="display: none;">
 									<option value="">Select</option>
 									<?php foreach ($types as $item) {?>
-										<option value="<?php echo $item->id;?>" <?php if(isset($row->type_id) && $row->type_id==$item->id){echo "selected";}?>><?php echo $item->name;?></option>
+										<option value="<?php echo $item->id;?>" <?php if(isset($row->service_type_id) && $row->service_type_id==$item->id){echo "selected";}?>><?php echo $item->name;?></option>
 									<?php }?>
 								</select>
 							</td>
@@ -630,6 +636,7 @@ $(document).ready(function(){
 		var start_date = trObj.attr('start-date');
 		var end_date = trObj.attr('end-date');
 		var dt = trObj.find(".editInput.date").val();
+		
 		console.log(order_schedule_id);
 		console.log(dt);
 		// console.log(end_date);
@@ -652,6 +659,7 @@ $(document).ready(function(){
         var inputData = trObj.find(".editInput").serialize();
 		//validation for session
         var dt = trObj.find(".editInput.date").val();
+		var updated_types = trObj.find(".editInput.types").val();
         var chunks = dt.split(",");
         var mnthDay = chunks[1];
         var testyr = chunks[2];
@@ -716,7 +724,7 @@ $(document).ready(function(){
 	            type:'POST',
 	            url: base_url+"app/presenters/update_scheduling",
 	            dataType: "json",
-	            data:'order_id='+order_id+'&school_id='+school_id+'&order_schedule_id='+order_schedule_id+'&'+inputData,
+	            data:'order_id='+order_id+'&school_id='+school_id+'&order_schedule_id='+order_schedule_id+'&'+inputData+'&updated_types='+updated_types,
 	            success:function(response){
 	            	window.location.href = base_url+"/app/presenters/scheduling/?order_id="+order_id+"&school_id="+school_id;
 					jQuery('.loader_img').hide();

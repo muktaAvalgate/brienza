@@ -1294,12 +1294,14 @@ class App_model extends CI_Model {
 	}
 	function get_order_schedule($order_id=null, $presenter_id=null, $group_by='') {
 		$order_id = (int) $order_id;
-		$this->db->select('order_schedules.*, DATE_FORMAT(order_schedules.start_date, "%Y-%m-%d") AS start_date_ymd, grades.name AS grade_name, worktypes.name AS worktype_name, title_topics.topic AS topic_name,title_topics.description AS topic_description, order_schedule_status_log.attachment, order_schedule_status_log.content, order_schedule_status_log.id AS order_schedule_status_id,order_schedule_status_log.order_schedule_id, orders.school_id, user_meta.meta_value AS school_color, p_rate.meta_value as hourly_rate');
+		$this->db->select('order_schedules.*, DATE_FORMAT(order_schedules.start_date, "%Y-%m-%d") AS start_date_ymd, grades.name AS grade_name, worktypes.name AS worktype_name, title_topics.topic AS topic_name,title_topics.description AS topic_description, order_schedule_status_log.attachment, order_schedule_status_log.content, order_schedule_status_log.id AS order_schedule_status_id,order_schedule_status_log.order_schedule_id, orders.school_id, user_meta.meta_value AS school_color, p_rate.meta_value as hourly_rate,service_type.name , service_type.id AS service_type_id');
 		$this->db->from('order_schedules');
         $this->db->join('user_meta AS p_rate', 'order_schedules.created_by = p_rate.user_id AND p_rate.meta_key = \'rate\'', 'left');
 		$this->db->join('title_topics', 'order_schedules.topic_id = title_topics.id', 'left');
 		$this->db->join('grades', 'order_schedules.grade_id = grades.id', 'left');
 		$this->db->join('worktypes', 'order_schedules.type_id = worktypes.id', 'left');
+		// $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id', 'left');
+		$this->db->join('service_type ', 'order_schedules.service_type_id = service_type.id', 'left');
 		$this->db->join('orders', 'order_schedules.order_id = orders.id', 'left');
 		$this->db->join('order_schedule_status_log', 'order_schedules.id = order_schedule_status_log.order_schedule_id AND order_schedule_status_log.new_status = order_schedules.status', 'left');
         $this->db->join('user_meta', "user_meta.user_id = orders.school_id AND user_meta.meta_key = 'school_color'", "left outer");
@@ -5422,6 +5424,7 @@ class App_model extends CI_Model {
         $this->db->from('order_schedules');
         $this->db->join('grades', 'order_schedules.grade_id = grades.id');
         $this->db->join('title_topics', 'order_schedules.topic_id = title_topics.id');
+        // $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id');
         $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id');
         $this->db->where('order_schedules.id', $schedule_id);
         $query=$this->db->get();
