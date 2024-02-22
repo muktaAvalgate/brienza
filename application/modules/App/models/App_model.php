@@ -1246,6 +1246,17 @@ class App_model extends CI_Model {
 		$query = $this->db->get(); //echo $this->db->last_query()."<br>";
 		return $query->result();
 	}
+	// public function get_participant_list($filter = array()) {
+	// 	$this->db->select('service_type.*');
+	// 	$this->db->from('service_type');
+	// 	if (isset($filter['deleted']) && $filter['deleted'] !== "") {
+    //         $this->db->where('service_type.is_deleted', $filter['deleted']);
+   	// 	}
+	// 	$this->db->order_by('name ASC');
+	// 	$this->db->group_by("service_type.id");
+	// 	$query = $this->db->get(); //echo $this->db->last_query()."<br>";
+	// 	return $query->result();
+	// }
 	/**
      *
      * @param $bar_id
@@ -1253,8 +1264,8 @@ class App_model extends CI_Model {
      */
     function get_worktype_details($id) {
     	$id = (int) $id;
-		$this->db->from('worktypes');
-		$this->db->where('worktypes.id', $id);
+		$this->db->from('service_type');
+		$this->db->where('service_type.id', $id);
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br>";die;
    		return $query->row();
@@ -1294,13 +1305,13 @@ class App_model extends CI_Model {
 	}
 	function get_order_schedule($order_id=null, $presenter_id=null, $group_by='') {
 		$order_id = (int) $order_id;
-		$this->db->select('order_schedules.*, DATE_FORMAT(order_schedules.start_date, "%Y-%m-%d") AS start_date_ymd, grades.name AS grade_name, worktypes.name AS worktype_name, title_topics.topic AS topic_name,title_topics.description AS topic_description, order_schedule_status_log.attachment, order_schedule_status_log.content, order_schedule_status_log.id AS order_schedule_status_id,order_schedule_status_log.order_schedule_id, orders.school_id, user_meta.meta_value AS school_color, p_rate.meta_value as hourly_rate,service_type.name , service_type.id AS service_type_id');
+		$this->db->select('order_schedules.*, DATE_FORMAT(order_schedules.start_date, "%Y-%m-%d") AS start_date_ymd, grades.name AS grade_name, worktypes.name AS worktype_name, title_topics.topic AS topic_name,title_topics.description AS topic_description, order_schedule_status_log.attachment, order_schedule_status_log.content, order_schedule_status_log.id AS order_schedule_status_id,order_schedule_status_log.order_schedule_id, orders.school_id, user_meta.meta_value AS school_color, p_rate.meta_value as hourly_rate,service_type.name , service_type.id AS service_type_id,participants.id AS participant_id,participants.name AS participant_name');
 		$this->db->from('order_schedules');
         $this->db->join('user_meta AS p_rate', 'order_schedules.created_by = p_rate.user_id AND p_rate.meta_key = \'rate\'', 'left');
 		$this->db->join('title_topics', 'order_schedules.topic_id = title_topics.id', 'left');
 		$this->db->join('grades', 'order_schedules.grade_id = grades.id', 'left');
 		$this->db->join('worktypes', 'order_schedules.type_id = worktypes.id', 'left');
-		// $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id', 'left');
+		$this->db->join('participants', 'order_schedules.participant_id = participants.id', 'left');
 		$this->db->join('service_type ', 'order_schedules.service_type_id = service_type.id', 'left');
 		$this->db->join('orders', 'order_schedules.order_id = orders.id', 'left');
 		$this->db->join('order_schedule_status_log', 'order_schedules.id = order_schedule_status_log.order_schedule_id AND order_schedule_status_log.new_status = order_schedules.status', 'left');
@@ -5418,14 +5429,17 @@ class App_model extends CI_Model {
             return false;
         }
     }
+
+    //modified for participant type point 3 work mail
     public function get_order_schedule_formail($schedule_id){
         // echo $order_id;
-        $this->db->select('order_schedules.*,grades.name AS grades_name, title_topics.topic AS topic_name, worktypes.name AS type_name');
+        $this->db->select('order_schedules.*,grades.name AS grades_name, title_topics.topic AS topic_name, worktypes.name AS type_name,participants.name AS participants_name,participants.id AS participants_id');
         $this->db->from('order_schedules');
         $this->db->join('grades', 'order_schedules.grade_id = grades.id');
         $this->db->join('title_topics', 'order_schedules.topic_id = title_topics.id');
         // $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id');
-        $this->db->join('worktypes', 'order_schedules.type_id = worktypes.id');
+        $this->db->join('service_type AS worktypes', 'order_schedules.service_type_id = worktypes.id');
+        $this->db->join('participants', 'order_schedules.participant_id = participants.id');
         $this->db->where('order_schedules.id', $schedule_id);
         $query=$this->db->get();
         if($query->num_rows() > 0){
@@ -5687,6 +5701,16 @@ class App_model extends CI_Model {
         //echo $this->db->last_query()."<br>";die;
         return $query->row();
     }
+
+    function get_participant_details_for_mail($id) {
+    	$id = (int) $id;
+        $this->db->select('participants.*');
+		$this->db->from('participants');
+		$this->db->where('participants.id', $id);
+		$query = $this->db->get();
+		//echo $this->db->last_query()."<br>";die;
+   		return $query->row();
+   	}
 
 }
 /* End of file user_model.php */

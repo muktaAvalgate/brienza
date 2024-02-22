@@ -974,6 +974,7 @@ class Presenters extends Application_Controller {
 		{
             // Get the types
 			$data['types'] = $this->App_model->get_worktype_list(array('deleted'=>0, 'status'=>'active')); 
+			$data['participant'] = $this->App_model->get_participant_list(array('deleted'=>0, 'status'=>'active')); 
             // Get order details
 			if($this->session->userdata('role') == 'teacher')
             {
@@ -1080,6 +1081,7 @@ class Presenters extends Application_Controller {
 			$this->form_validation->set_rules('topics', 'Topic', 'trim|required|numeric');
 			// $this->form_validation->set_rules('topics', 'Topic', 'trim|required'); // added
 			$this->form_validation->set_rules('types', 'Type', 'trim|required|numeric');
+			$this->form_validation->set_rules('participant', 'Type', 'trim|required|numeric');
 			$this->form_validation->set_rules('grades', 'Grade', 'trim|required|numeric');
 			// $this->form_validation->set_rules('grades', 'Grade', 'trim|required');
 			$this->form_validation->set_rules('teachers', 'Teacher', 'trim|required');
@@ -1176,7 +1178,7 @@ class Presenters extends Application_Controller {
 					'topic_id' => $this->input->post('topics'),
 					// 'topic_id' => $topicId,
 					'service_type_id' => $this->input->post('types'),
-					// 'type_id' => $this->input->post('types'),
+					'participant_id' => $this->input->post('participant'),
 					'grade_id' => $this->input->post('grades'),
 					// 'grade_id' => $gradeId,
 					'teacher' => htmlspecialchars($this->input->post('teachers'), ENT_QUOTES, 'utf-8'),
@@ -1447,7 +1449,8 @@ class Presenters extends Application_Controller {
 		$schedule_id 	= $this->input->post('order_schedule_id');
 		$topic_id 		= $this->input->post('topics');
 		$type_id		= $this->input->post('updated_types');
-		// echo '<pre>';print($type_id);die;
+		$participant		= $this->input->post('participant');
+		// echo '<pre>';print($old_type);die;
 		$grade_id		= $this->input->post('grades');
 		$date 			= htmlspecialchars($this->input->post('date'), ENT_QUOTES, 'utf-8');
 		$start_time 	= htmlspecialchars($this->input->post('start_time'), ENT_QUOTES, 'utf-8');
@@ -1488,6 +1491,10 @@ class Presenters extends Application_Controller {
         }
         if($total_hours == ""){
         	$err .= "Total hours field is required.<br/>";
+        }
+
+        if($participant == ""){
+        	$err .= "Participant field is required.<br/>";
         }
 
         if($err != ""){
@@ -1584,8 +1591,10 @@ class Presenters extends Application_Controller {
 			'end_date' => $end_date,
 			'topic_id' => $this->input->post('topics'),
 			'service_type_id' => $this->input->post('types'),
+			'participant_id' => $this->input->post('participant'),
 			'grade_id' => $this->input->post('grades'),
 			'teacher' => $teacherName,
+			'type_id' => null,
 			'total_hours' => htmlspecialchars($this->input->post('total_hours'), ENT_QUOTES, 'utf-8'),
 			'is_public_school' =>$public_school_title->public_school_title_status,
 		);
@@ -1594,7 +1603,12 @@ class Presenters extends Application_Controller {
         // $presenter_name = $this->App_model->get_presenter_name($presenter_id);
 
         $order_schedules = $this->App_model->get_order_schedule_formail($schedule_id);
-        echo "<pre>"; print_r($order_schedules);die;
+        // echo "<pre>"; print_r($order_schedules);die;
+		if(!$order_schedules)
+		{
+			$returned_schedule_id = $this->App_model->update('order_schedules', 'id', $schedule_id, $data);
+			$order_schedules = $this->App_model->get_order_schedule_formail($schedule_id);
+		}
         $time_mail=NULL;
         $grade_teacher_mail=NULL;
         $type_mail=NULL;
@@ -1643,10 +1657,17 @@ class Presenters extends Application_Controller {
         }
 
 
+		//adding for participant type edit
+		$new_participant=$this->App_model->get_participant_details_for_mail($this->input->post('participant'));
+
+        if($order_schedules->participants_id != $this->input->post('participant')){
+            $type_mail = "Type - ".$new_participant->name." <i>[Previous value: ".$order_schedules->participants_name."]</i>";
+        }
+
 		
 		if ($schedule_id = $this->App_model->update('order_schedules', 'id', $schedule_id, $data)) {
 
-			if($order_schedules->start_date != $start_date || $order_schedules->end_date != $end_date || $order_schedules->grade_id != $this->input->post('grades') || $order_schedules->teacher != $teacherName || $order_schedules->type_id != $this->input->post('types') || $order_schedules->topic_id != $this->input->post('topics') || $order_schedules->total_hours != number_format(htmlspecialchars($this->input->post('total_hours'), ENT_QUOTES, 'utf-8'),1)){
+			if($order_schedules->start_date != $start_date || $order_schedules->end_date != $end_date || $order_schedules->grade_id != $this->input->post('grades') || $order_schedules->teacher != $teacherName || $order_schedules->type_id != $this->input->post('types') || $order_schedules->topic_id != $this->input->post('topics') || $order_schedules->total_hours != number_format(htmlspecialchars($this->input->post('total_hours') || $order_schedules->participants_id != $this->input->post('participant'), ENT_QUOTES, 'utf-8'),1)){
 				$subject = "BAASP UPDATE - " . $presenter_name->first_name . " " . $presenter_name->last_name . " - Order: " . $order_number->order_no." - Updated schedule";
 				// echo $subject;die;
 

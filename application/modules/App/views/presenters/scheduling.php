@@ -137,8 +137,9 @@
 							<th>End Time</th>
 							<th>Topic</th>
 							<th>Service Type</th>
+							<th>Participant Type</th>
 							<th>Grade</th>
-							<th>Teacher</th>
+							<th>Participant Name</th>
 							<th>Total Hours</th>
 							<th>Action</th>
 						</tr>
@@ -171,6 +172,7 @@
 							<td>
 								<?php if(isset($row->type_id)){ ?>
 								<span class="editSpan types" data-type="<?php echo $row->type_id; ?>"><?php echo $row->worktype_name;?></span>
+								
 								<?php }else{ ?>
 									<span class="editSpan types" data-type="<?php echo $row->service_type_id; ?>"><?php echo $row->name;?></span>
 								<?php } ?>
@@ -181,6 +183,21 @@
 									<?php }?>
 								</select>
 							</td>
+						
+							<td>
+								<?php if(isset($row->participant_id)){ ?>
+								<span class="editSpan participant" data-type="<?php echo $row->participant_id; ?>"><?php echo $row->participant_name;?></span>
+								<?php }else{ ?>
+									<span class="editSpan participant" >N/A</span>
+								<?php } ?>
+								<select name="participant" class="form-control editInput participant" required  style="display: none;">
+									<option value="">Select</option>
+									<?php foreach ($participant as $item) {?>
+										<option value="<?php echo $item->id;?>" <?php if(isset($row->participant_id) && $row->participant_id==$item->id){echo "selected";}?>><?php echo $item->name;?></option>
+									<?php }?>
+								</select>
+							</td>
+
 								<td>
 								<span class="editSpan grades" data-grade="<?php echo $row->grade_id; ?>"><?php echo $row->grade_name;?></span>
 								 <select name="grades" class="form-control editInput grade_teacher" data-id="<?php echo $row->id;?>" style="display: none;">
@@ -256,6 +273,16 @@
 									<?php }?>
 								</select>
 							</td>
+						
+							<td class="col-md-1">
+								<select name="participant" class="form-control" required>
+									<option value="">Select</option>
+									<?php foreach ($participant as $item) {?>
+										<option value="<?php echo $item->id;?>"><?php echo $item->name;?></option>
+									<?php }?>
+								</select>
+							</td>
+
 							<td class="col-md-2">
 							<?php
 								if(!empty($teacher_grades)){
@@ -281,6 +308,7 @@
 							?>
 								
 							</td>
+							
 							<td>
 								<!-- <select name="teachers1"  class="form-control teach" style="display: none;" onclick="blockFreeText();">
 									</div><option value="<?php ;?>">select</option>
@@ -629,6 +657,7 @@ $(document).ready(function(){
         //end
 
         var trObj = $(this).closest("tr");
+		// var data_type_id=$trObj.attr("data-type");
         var order_schedule_id = trObj.attr('data-id');
         var school_id = trObj.attr('data-school-id');
         var order_id = trObj.attr('data-order-id');
@@ -656,10 +685,17 @@ $(document).ready(function(){
 	        });
 
 		}else{
+			// alert(data_type_id);
         var inputData = trObj.find(".editInput").serialize();
 		//validation for session
         var dt = trObj.find(".editInput.date").val();
+		// var types=$('#old_types').val();
+		// // if(types){
+		// 	var old_types=types;
+		// }else{
 		var updated_types = trObj.find(".editInput.types").val();
+		// }
+		var participant = trObj.find(".editInput.participant").val();
         var chunks = dt.split(",");
         var mnthDay = chunks[1];
         var testyr = chunks[2];
@@ -698,9 +734,9 @@ $(document).ready(function(){
         if(trObj.find(".editInput.grades").val() == ""){
         	err += "Grade field is required.\n";
         }
-        // if(trObj.find(".editInput.teachers").val() == ""){
-        // 	err += "Teachers field is required.\n";
-        // }
+        if(trObj.find(".editInput.participant").val() == ""){
+        	err += "Participant field is required.\n";
+        }
 		if(flag == 0){
             err += "Schedule date must be within the session of this order.\n";
         }
@@ -724,7 +760,7 @@ $(document).ready(function(){
 	            type:'POST',
 	            url: base_url+"app/presenters/update_scheduling",
 	            dataType: "json",
-	            data:'order_id='+order_id+'&school_id='+school_id+'&order_schedule_id='+order_schedule_id+'&'+inputData+'&updated_types='+updated_types,
+	            data:'order_id='+order_id+'&school_id='+school_id+'&order_schedule_id='+order_schedule_id+'&'+inputData+'&updated_types='+updated_types+'&participant='+participant+'&old_types='+old_types,
 	            success:function(response){
 	            	window.location.href = base_url+"/app/presenters/scheduling/?order_id="+order_id+"&school_id="+school_id;
 					jQuery('.loader_img').hide();
