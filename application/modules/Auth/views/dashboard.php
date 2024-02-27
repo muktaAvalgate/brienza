@@ -13,13 +13,13 @@
             </div>
 			<!-- session -->
 			<div id="sub-menu" class="col-sm-2 col-md-2 pull-right">
-				<div class="form-group" style="margin-top: 10px;">
+				<!-- <div class="form-group" style="margin-top: 10px;">
 					<select name="session" class="form-control" onchange="getDetails()"; id="session">
 						<?php foreach ($s_array as $key => $value) {?>
 							<option value="<?php echo $key;?>" <?php echo $curr_session_id == $key?'selected':''; ?>><?php echo $value;?></option>
 						<?php }?>
 					</select>
-				</div>
+				</div> -->
 				<div class="form-group" style="margin-top: 10px;">
 					<span style="font-weight:900">Total hours assigned : </span><span style="font-weight:900" id="assignHours"></span>
 				</div>

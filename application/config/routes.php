@@ -66,6 +66,10 @@ $route['totalbilled/(:any)/(:any)/(:any)/(:any)'] = "Auth/paidorders/$1/$2/$3/$4
 $route['totalbilled/(:any)/(:any)/(:any)/(:any)/(:any)'] = "Auth/paidorders/$1/$2/$3/$4/$5";
 $route['totalbilled/(:any)/(:any)/(:any)/(:any)/(:any)/(:any)'] = "Auth/paidorders/$1/$2/$3/$4/$5/$6";
 $route['agenda_schedule'] 			= "Auth/agenda_schedule";
+
+//added for convert csv button
+$route['convertToCsv'] 			= "Auth/convertToCsv";
+
 $route['agenda_schedule/(:any)'] 	= "Auth/agenda_schedule/$1";
 $route['agenda_schedule/(:any)/(:any)'] 	= "Auth/agenda_schedule/$1/$2";
 

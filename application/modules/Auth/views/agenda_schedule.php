@@ -28,6 +28,13 @@
 				<li><a href="<?php //echo base_url('app/payroll/payment_schedules_add');?>"><span class="glyphicon glyphicon-plus-sign"></span> Add Payment Schedule</a></li>
 			</ul>
         </div> -->
+
+		<div id="sub-menu" class="pull-right">
+        	<ul class="nav nav-pills">
+				<li class="active"><a href="<?php echo base_url('convertToCsv');?>"><span class="glyphicon glyphicon-bookmark"></span> Export To CSV</a></li>
+				
+    		</ul>
+        </div>
     </div>
 </div>
 

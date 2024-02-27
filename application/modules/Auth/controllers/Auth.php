@@ -579,7 +579,7 @@ class Auth extends Application_Controller {
     }
     ## --------- End of the code ------------ ##    
 
-    public function agenda_schedule() 
+    public function agenda_schedule($var=null) 
     {
         if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
             $url1 = "https://";   
@@ -676,6 +676,10 @@ class Auth extends Application_Controller {
         }
         
         // Get the total rows without limit
+        if($var){
+            $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, false);
+            return $total_rows;
+        }
         $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, true);
         // $config         = $this->init_pagination('agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 3, $total_rows);
         if(!empty($session_sort) && !empty($status_sort)){
@@ -692,6 +696,8 @@ class Auth extends Application_Controller {
         if ($limit_end < 0){
             $limit_end = 0;
         }
+
+        // echo '<pre>'; print_r($config);die;
 
         $filter['limit'] = $config['per_page'];
         $filter['offset'] = $limit_end;
@@ -797,6 +803,57 @@ class Auth extends Application_Controller {
 
     public function termsConditionView(){
         $this->load->view('termsCondition', TRUE);
+    }
+
+
+    public function convertToCsv(){
+        // echo 'to csv';
+        $total_rows=$this->agenda_schedule('agenda');
+        // echo '<pre>';print_r($total_rows);die;
+        $blankArray = array();
+        $scheduleArray = array();
+
+        foreach($total_rows as $row){
+            $blankArray['session'] =  date_display($row->start_date, "m/d/Y") . '@'.  time_display($row->start_date, true).'-'. time_display($row->end_date, true);
+            $blankArray['order_no'] = $row->order_no;
+            $blankArray['total_hours'] = $row->total_hours;
+            $blankArray['presenter_name'] = $row->presenter_name;
+            $blankArray['status'] = $row->status;
+            // $blankArray['teacher'] = $row->teacher;
+            
+            // echo $row->teacher;
+            array_push($scheduleArray,$blankArray);
+        }
+        // echo '<pre>';print_r($scheduleArray);die;
+
+        if (count($total_rows)>0){
+            $filename = 'Schedule_list_'.date('mdY').'.csv';
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=$filename");
+            header("Content-Type: application/csv; ");
+            
+            $file = fopen('php://output', 'w');
+            $delimiter = ',';
+              
+                $header[0]="Session ";
+                $header[1]="Order";
+                $header[2]="Schedule Hours";
+                $header[3]="Presenter Name";
+                $header[4]="Status";
+                // $header[5]="Status";
+                
+                fputcsv($file, $header,$delimiter);
+                foreach ($scheduleArray as $key => $line){
+                    fputcsv($file,$line);
+                }
+            fclose($file);
+            exit;
+
+        }else{
+            $this->session->set_flashdata('message_type', 'danger');
+            $this->session->set_flashdata('message', '<strong>Oh snap!</strong> No data available.');
+            redirect('/App/Students/');
+        }   
     }
 
 
