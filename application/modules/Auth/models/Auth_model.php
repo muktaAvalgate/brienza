@@ -1164,25 +1164,40 @@ class Auth_model extends CI_Model {
 		$res = $this->db->get()->row_array();
 		return $res['total_new_hour'];
 	}
-	public function get_agenda_schedule($filter = array(), $order = null, $dir = null, $count = false){
+	public function get_agenda_schedule($filter = array(), $order = null, $dir = null, $count = false,$curr_session_id){
 
 		/**
 		 * Following code will trace
 		 * the order id whose at lease schedule get paid
 		*/
-		$previous_year = date("Y",strtotime("-1 year")); // added 10-01-2022
-		$agenda_schedule_date = $previous_year.'-09-01';  // added 10-01-2022
+		// $session_id=$session_id;
+		// echo '<pre>';print($curr_session_id);die;
+		$dateArray=array();
+		if($curr_session_id){
+			$this->db->select('start_date,end_date');
+			$this->db->from('sessions');
+			$this->db->where('id', $curr_session_id);
+			$query = $this->db->get();
+			$dateArray=$query->result();
+			
+		}
+		// $previous_year = date("Y",strtotime("-1 year")); // added 10-01-2022
+		// $agenda_schedule_date = $previous_year.'-09-01';  // added 10-01-2022
+		// // $agenda_schedule_date = $dateArray[0]->start_date.$dateArray[0]->end_date;  
+		// echo '<pre>';print_r($agenda_schedule_date);die;
 		$this->db->select('order_assigned_presenters.presenter_id, order_schedules.*, CONCAT(users.first_name, " ", users.last_name) AS presenter_name, orders.order_no');
 		$this->db->from('order_assigned_presenters');
 		$this->db->join('order_schedules', 'order_schedules.created_by = order_assigned_presenters.presenter_id');
 		$this->db->join('users', 'users.id = order_assigned_presenters.presenter_id', 'left');
 		$this->db->join('orders', 'orders.id = order_schedules.order_id');
-		$this->db->where('order_schedules.status !=', 'Completed');
-		$this->db->where('order_schedules.status !=', 'Payment sent');
+		// $this->db->where('order_schedules.status !=', 'Completed');
+		// $this->db->where('order_schedules.status !=', 'Payment sent');
 		$this->db->where('order_schedules.status !=', "Rejected - don't want");
 		$this->db->where('orders.is_deleted !=', 1);  // 19-06-2023
 		// $this->db->like('order_schedules.created_on', date("Y"), 'after');
-		$this->db->where('order_schedules.created_on >=', $agenda_schedule_date); // added 10-01-2022
+		// $this->db->where('order_schedules.created_on >=', $agenda_schedule_date); // added 10-01-2022
+		$this->db->where('order_schedules.created_on >=', $dateArray[0]->start_date); 
+		$this->db->where('order_schedules.created_on <=', $dateArray[0]->end_date); 
 
 		// $this->db->order_by('order_schedules.status');
 		// if(empty($filter['statusSort'])){
@@ -1242,7 +1257,7 @@ class Auth_model extends CI_Model {
    		$this->db->group_by("order_schedules.id");
 
 		$query = $this->db->get();
-   		//echo $this->db->last_query()."<br>";die;
+   		// echo $this->db->last_query()."<br>";die;
    		return $query->result();
 	}
 

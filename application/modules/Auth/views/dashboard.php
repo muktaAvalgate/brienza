@@ -20,12 +20,12 @@
 						<?php }?>
 					</select>
 				</div> -->
-				<div class="form-group" style="margin-top: 10px;">
+				<!-- <div class="form-group" style="margin-top: 10px;">
 					<span style="font-weight:900">Total hours assigned : </span><span style="font-weight:900" id="assignHours"></span>
 				</div>
 				<div class="form-group" style="margin-top: -10px;">
 					<span style="font-weight:900">Total hours scheduled : </span><span style="font-weight:900" id="scheduleHours"></span>
-				</div>
+				</div> -->
 			</div>
 		<?php }else if($this->session->userdata('role') == "teacher"){ ?>
 			<div class="col-sm-10 col-md-10 page-name">

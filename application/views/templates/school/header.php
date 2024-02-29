@@ -1,17 +1,24 @@
 <div class="top_nav hidden-print">
 	<div class="row nav_menu">
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<div class="navbar nav_title" style="border: 0;"> <a href="javascript:void(0);" class="site_title"><img src="<?php echo HTTP_IMAGES_PATH;?>logo.png"></a></div>
 		</div>
 
 		<div class="col-md-3" style="margin-top: 30px;">
 			<select name="session" class="form-control" onchange="getDetails()"; id="session">
-					<?php foreach ($s_array as $key => $value) {?>
-						<option value="<?php echo $key;?>" <?php echo $curr_session_id == $key?'selected':''; ?>><?php echo $value;?></option>
+					<?php foreach ($this->session->userdata('s_array') as $key => $value) {?>
+						<option value="<?php echo $key;?>" <?php echo $this->session->userdata('curr_session_id') == $key?'selected':''; ?>><?php echo $value;?></option>
 					<?php }?>
 				</select>
 		</div>
-		<div class="col-md-5">
+		
+		<div class="col-md-2" style="margin-top: 27px;">
+					<span style="font-weight:900" >Total hours assigned : </span><span style="font-weight:900" id="assignHours"><?php echo $this->session->userdata('totHoursAssgnd') ?></span>
+				
+					<span style="font-weight:900">Total hours scheduled : </span><span style="font-weight:900" id="scheduleHours"><?php echo $this->session->userdata('totHoursSchedule')  ?></span>
+				</div>
+			
+		<div class="col-md-4">
 			<nav>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="logout"><a href="<?php echo base_url('Auth/logout');?>">Logout</a></li>			  
@@ -43,6 +50,8 @@
 </div>
 
 <script type="text/javascript">
+
+
 function getDetails(){
 		var session = $('#session').val();
 		jQuery.ajax({
@@ -53,11 +62,15 @@ function getDetails(){
 			dataType: 'JSON',
 			success: function (response) {
 				// selecting values from response Object
+				console.log(response);
 				var totHoursAssgnd = response.totHoursAssgnd;
 				var totHoursSchedule = response.totHoursSchedule;
 				$('#scheduleHours').html(totHoursSchedule);
 				$('#assignHours').html(totHoursAssgnd);
+				window.location.reload();
 			}
 		});
+
+		
 	}
 </script>
