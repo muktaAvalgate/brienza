@@ -22,9 +22,6 @@ class Auth extends Application_Controller {
 	public function __construct() {
 
         parent::__construct();
-        $this->load->model('Auth_model');
-        $this->load->model('../../App/models/App_model');
-        
     }
 
 	public function index() {
@@ -66,20 +63,8 @@ class Auth extends Application_Controller {
             } else {
 
             	$this->load->model('Auth_model');
-            	$this->load->model('App_model');
             	//$this->load->helper('date');
-                $curr_date = date("Y-m-d h:i:s");
-                $session_id = $this->App_model->get_curr_session_id($curr_date);
-                $totHoursAssgnd = $this->App_model->get_total_hours_assigned($session_id);
-        $totHoursSchedule = $this->App_model->get_total_hours_schedule($session_id);
-        if($totHoursAssgnd && $totHoursSchedule){
-            $totHoursAssgnd=round($totHoursAssgnd->total_assigned_hours);
-            $totHoursSchedule=round($totHoursSchedule->total_scheduled_hours);
-        }else{
-            $totHoursAssgnd=0;
-            $totHoursSchedule=0;
-        }
-                // $data['s_array'] = $this->App_model->get_sessions();
+
             	if($is_valid_details = $this->Auth_model->validate($email, $this->_encrip_password($password)))
             	{
                     $data = array(
@@ -92,11 +77,7 @@ class Auth extends Application_Controller {
 						'profile_pic' => $this->Auth_model->get_user_pic($is_valid_details->id),
                     	'permissions' => $this->Auth_model->get_user_permissions($is_valid_details->id),
                     	'navmenu' => $this->Auth_model->get_main_menu($is_valid_details->role_id),
-            			'is_logged_in' => true,
-                        'curr_session_id'=>$session_id,
-                        's_array'=>$this->App_model->get_sessions(),
-                        'totHoursAssgnd'=>$totHoursAssgnd,
-                        'totHoursSchedule'=>$totHoursSchedule
+            			'is_logged_in' => true
             		);
 					
             		$this->session->set_userdata($data);
@@ -289,7 +270,8 @@ class Auth extends Application_Controller {
 
 		$this->data['dashboard'] = array();
 
-		
+		$this->load->model('Auth_model');
+        $this->load->model('../../App/models/App_model');
 
 		//echo $this->session->userdata('role'); die;
 		if ($this->session->userdata('role') == "super_administrator") {
@@ -597,9 +579,8 @@ class Auth extends Application_Controller {
     }
     ## --------- End of the code ------------ ##    
 
-    public function agenda_schedule($var=null) 
+    public function agenda_schedule() 
     {
-        // print_r($this->session->all_userdata());
         if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
             $url1 = "https://";   
         else  
@@ -608,22 +589,7 @@ class Auth extends Application_Controller {
         $url1.= $_SERVER['HTTP_HOST'];   
         
         // Append the requested resource location to the URL   
-        $url1.= $_SERVER['REQUEST_URI']; 
-        $path = parse_url($url1, PHP_URL_PATH); // Get the path part of the URL
-        $parts = explode('/', $path); // Split the path into parts
-        
-        // Find the index of "status" in the parts array
-        $statusIndex = array_search('status', $parts);
-        
-        if ($statusIndex !== false && isset($parts[$statusIndex + 1])) {
-            $statusValue = $parts[$statusIndex + 1]; // Get the value after "status"
-            // echo $statusValue;
-            $this->session->set_userdata('pagination_status',str_replace('+',' ',$statusValue));
-            // echo '<pre>';print_r(str_replace('+',' ',$statusValue));die;
-        } else {
-            $this->session->set_userdata('pagination_status',null);
-            // echo "Status not found in the URL.";
-        }    
+        $url1.= $_SERVER['REQUEST_URI'];    
         
         $key = 'sessionSort';
         $key2 = 'statusSort';
@@ -656,7 +622,7 @@ class Auth extends Application_Controller {
 
         // $uri                = $this->uri->uri_to_assoc(2, $default_uri);
         $uri                = $this->uri->uri_to_assoc(3, $default_uri);
-        // echo '<pre>';print_r($uri);
+
         $pegination_uri     = array();
 
         if ($uri['page'] > 0) {
@@ -708,32 +674,17 @@ class Auth extends Application_Controller {
                 $pegination_uri['statusSort'] = "~";
             }
         }
-        
+        echo '<pre>'; print_r($filter);die;
         // Get the total rows without limit
-        $curSe=$this->session->userdata('curr_session_id');
-        // if($var != null){
-        //     $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, false,$curSe);
-        //     return $total_rows;
-        // }
-        $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, true,$curSe);
+        $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, true);
         // $config         = $this->init_pagination('agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 3, $total_rows);
-        // echo '<pre>'; print_r($session_sort);
-        // echo '<pre>'; print_r($status_sort);
-        // echo '<pre>'; print_r($total_rows); die;
         if(!empty($session_sort) && !empty($status_sort)){
-            echo '<pre>'; print_r($total_rows); die;
             $config         = $this->init_pagination('auth/agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 14, $total_rows);
-            
         }else if(!empty($session_sort) && empty($status_sort)){
-            
             $config         = $this->init_pagination('auth/agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 12, $total_rows);
-            
         }else if(!empty($status_sort) && empty($session_sort)){
-            
             $config         = $this->init_pagination('auth/agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 12, $total_rows);
-            
         }else{
-            $this->session->set_userdata('pagination_status',null);
             $config         = $this->init_pagination('auth/agenda_schedule/'.$this->uri->assoc_to_uri($pegination_uri).'//page/', 10, $total_rows);
         }
 
@@ -742,26 +693,17 @@ class Auth extends Application_Controller {
             $limit_end = 0;
         }
 
-        // echo '<pre>'; print_r($config);die;
-
         $filter['limit'] = $config['per_page'];
         $filter['offset'] = $limit_end;
 
         // Get the order List
-        
-        $data['schedules'] = $this->Auth_model->get_agenda_schedule($filter, 'created_on', 'desc',false,$curSe);
+        $data['schedules'] = $this->Auth_model->get_agenda_schedule($filter, 'created_on', 'desc');
         $data['presenters'] = $this->Admin_model->get_users_list(array('deleted'=>0, 'status'=>'active', 'role_token'=>'teacher'), 'first_name', 'ASC');
         $data['filter'] = $filter;
-       
+
         $data['page'] = 'orders';
         $data['page_title'] = SITE_NAME.' :: Agenda Schedule';
-        // $data['s_array'] = $this->App_model->get_sessions();
-        // echo '<pre>';print_r($data['s_array']);die;
-        // $data['s_array'] = $this->App_model->get_sessions();
-        // $curr_date = date("Y-m-d h:i:s");
-        // $data['curr_session_id'] = $this->App_model->get_curr_session_id($curr_date);
-        // echo '<pre>';print_r($data['curr_session_id']);die;
-        
+
         $data['main_content'] = 'agenda_schedule';
         $this->load->view(TEMPLATE_PATH, $data);
     }
@@ -769,17 +711,12 @@ class Auth extends Application_Controller {
     public function session_details(){
         $this->load->model('../../App/models/App_model');
         $session_id = $this->input->post('session');
-        $this->session->set_userdata('curr_session_id',$session_id);
         $totHoursAssgnd = $this->App_model->get_total_hours_assigned($session_id);
         $totHoursSchedule = $this->App_model->get_total_hours_schedule($session_id);
         if($totHoursAssgnd && $totHoursSchedule){
             $return_arr = array('totHoursAssgnd'=>round($totHoursAssgnd->total_assigned_hours),'totHoursSchedule'=>round($totHoursSchedule->total_scheduled_hours));
-            $this->session->set_userdata('totHoursAssgnd',round($totHoursAssgnd->total_assigned_hours));
-            $this->session->set_userdata('totHoursSchedule',round($totHoursSchedule->total_scheduled_hours));
         }else{
             $return_arr = array('totHoursAssgnd'=>0,'totHoursSchedule'=>0);
-            $this->session->set_userdata('totHoursAssgnd',0);
-            $this->session->set_userdata('totHoursSchedule',0);
         }
         echo json_encode($return_arr);
     }
@@ -860,68 +797,6 @@ class Auth extends Application_Controller {
 
     public function termsConditionView(){
         $this->load->view('termsCondition', TRUE);
-    }
-
-
-    public function convertToCsv(){
-        
-          
-        $pagination_status=$this->session->userdata('pagination_status');    
-        if($pagination_status != null){
-            $filter['status']=$pagination_status;
-        }else{
-            $filter=null;
-        }
-    // echo '<pre>';print_r($statusValue);die;
-    // Get the total rows without limit
-    $curSe=$this->session->userdata('curr_session_id');
-   
-        $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, false,$curSe);
-//    echo '<pre>';print_r($total_rows);die;
-        $blankArray = array();
-        $scheduleArray = array();
-
-        foreach($total_rows as $row){
-            $blankArray['session'] =  date_display($row->start_date, "m/d/Y") . '@'.  time_display($row->start_date, true).'-'. time_display($row->end_date, true);
-            $blankArray['order_no'] = $row->order_no;
-            $blankArray['total_hours'] = $row->total_hours;
-            $blankArray['presenter_name'] = $row->presenter_name;
-            $blankArray['status'] = $row->status;
-            // $blankArray['teacher'] = $row->teacher;
-            
-            // echo $row->teacher;
-            array_push($scheduleArray,$blankArray);
-        }
-        // echo '<pre>';print_r($scheduleArray);die;
-
-        if (count($total_rows)>0){
-            $filename = 'Schedule_list_'.date("Y-m-d h:i:s").'.csv';
-            header("Content-Description: File Transfer");
-            header("Content-Disposition: attachment; filename=$filename");
-            header("Content-Type: application/csv; ");
-            
-            $file = fopen('php://output', 'w');
-            $delimiter = ',';
-              
-                $header[0]="Session ";
-                $header[1]="Order";
-                $header[2]="Schedule Hours";
-                $header[3]="Presenter Name";
-                $header[4]="Status";
-                // $header[5]="Status";
-                
-                fputcsv($file, $header,$delimiter);
-                foreach ($scheduleArray as $key => $line){
-                    fputcsv($file,$line);
-                }
-            fclose($file);
-            exit;
-
-        }else{
-            $this->session->set_flashdata('message_type', 'danger');
-            $this->session->set_flashdata('message', '<strong>Oh snap!</strong> No data available.');
-            redirect('/App/Students/');
-        }   
     }
 
 

@@ -1,11 +1,42 @@
+<style>
+	.nav_menu {
+    background: #fff;
+    margin-left: 0px;
+}
+
+.session {
+	margin-top: 8px;
+	font-weight: bold;
+}
+.form-control-session {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    margin-left: 10px;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+
+}
+
+</style>
 <div class="top_nav hidden-print">
 	<div class="row nav_menu">
 		<div class="col-md-3">
 			<div class="navbar nav_title" style="border: 0;"> <a href="javascript:void(0);" class="site_title"><img src="<?php echo HTTP_IMAGES_PATH;?>logo.png"></a></div>
 		</div>
 
-		<div class="col-md-3" style="margin-top: 30px;">
-			<select name="session" class="form-control" onchange="getDetails()"; id="session">
+		<div class="col-md-3" style="margin-top: 30px; display:flex;">
+			<span class="session">Session:</span><select name="session" class="form-control form-control-session" onchange="getDetails()"; id="session">
 					<?php foreach ($this->session->userdata('s_array') as $key => $value) {?>
 						<option value="<?php echo $key;?>" <?php echo $this->session->userdata('curr_session_id') == $key?'selected':''; ?>><?php echo $value;?></option>
 					<?php }?>
@@ -63,10 +94,10 @@ function getDetails(){
 			success: function (response) {
 				// selecting values from response Object
 				console.log(response);
-				var totHoursAssgnd = response.totHoursAssgnd;
-				var totHoursSchedule = response.totHoursSchedule;
-				$('#scheduleHours').html(totHoursSchedule);
-				$('#assignHours').html(totHoursAssgnd);
+				// var totHoursAssgnd = response.totHoursAssgnd;
+				// var totHoursSchedule = response.totHoursSchedule;
+				// $('#scheduleHours').html(totHoursSchedule);
+				// $('#assignHours').html(totHoursAssgnd);
 				window.location.reload();
 			}
 		});

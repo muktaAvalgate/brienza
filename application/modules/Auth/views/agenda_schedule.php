@@ -137,7 +137,7 @@
 
 									<option value="Invoice created" <?php if ($filter['status'] == 'Invoice+created') { echo "selected";}?>>Invoice created</option>
 									
-									<option value="Payment sent" <?php if ($filter['status'] == 'Payment sent') { echo "selected";}?>>Payment sent</option>
+									<option value="Payment sent" <?php if ($filter['status'] == 'Payment+sent') { echo "selected";}?>>Payment sent</option>
 
 									<option value="Completed" <?php if ($filter['status'] == 'Completed') { echo "selected";}?>>Completed</option>
 
