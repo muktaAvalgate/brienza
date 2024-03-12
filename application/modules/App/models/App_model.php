@@ -1278,7 +1278,7 @@ class App_model extends CI_Model {
 		$this->db->where('school_titles.school_id', $school_id);
         $this->db->where('school_titles.is_deleted', 0); // 10-07-2023
 		$query = $this->db->get();
-		//echo $this->db->last_query()."<br>";die;
+		// echo $this->db->last_query()."<br>";die;
    		//return $query->result();
 		$data = array();
 		foreach ($query->result() as $key => $value) {
@@ -5573,6 +5573,7 @@ class App_model extends CI_Model {
 		$this->db->join('users AS grades_updated', 'programs.updated_by = grades_updated.id', 'left');
 		$this->db->where('programs.id', $id);
         $this->db->where('programs.is_deleted', 0);
+        $this->db->where('programs.status', 'active');
 		$query = $this->db->get();
 		//echo $this->db->last_query()."<br>";die;
    		return $query->row();
@@ -5580,6 +5581,7 @@ class App_model extends CI_Model {
             $this->db->select('programs.*');
 		    $this->db->from('programs');
             $this->db->where('programs.is_deleted', 0);
+            $this->db->where('programs.status', 'active');
             $query = $this->db->get();
             return $query->result();
         }
@@ -5712,6 +5714,18 @@ class App_model extends CI_Model {
    		return $query->row();
    	}
 
+    public function uniqueWpNo($work_plan_number){
+        $this->db->select('work_plan_number');
+		$this->db->from('orders');
+		$this->db->where('work_plan_number', $work_plan_number);
+		$query = $this->db->get();
+		// echo $this->db->last_query()."<br>";die;
+   		if( $query->num_rows() == 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */

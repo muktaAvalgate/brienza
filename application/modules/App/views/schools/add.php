@@ -1,4 +1,27 @@
+<style>
+/* .basic-info-area{
+	width: 590px;
+    margin-left: -33px;
+} */
 
+/* .form-horizontal .form-group {
+    margin-right: 0px;
+    margin-left: -12px;
+} */
+
+/* .Participants-area{
+	width: 555px;
+} */
+
+/* .form-control-Participants{
+	width: 130px;
+    padding: 0px;
+}
+
+.audit-info-list{
+	width: 493px;
+} */
+</style>
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/spectrum.css">
 <script src="<?php echo base_url()?>assets/js/spectrum.js"></script>
@@ -39,81 +62,157 @@
 		$attributes = array('class' => 'form-horizontal', 'id' => 'addTitle', 'role' => 'form', 'data-toggle' => 'validator');
 		echo form_open_multipart(base_url('app/schools/add'), $attributes);
       ?>
-	<div class="col-sm-6">
+	<div class="col-sm-4">
 
       	<fieldset>
     		<legend>Basic Info</legend>
-			
-		  	<div class="form-group">
-		  		<label for="inputName" class="col-sm-3 control-label">School Name *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="meta[school_name]" class="form-control" id="inputName" placeholder="Enter school name" value="<?php echo set_value('meta[school_name]'); ?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
 
-			<div class="form-group">
-                <label for="inputName" class="col-sm-3 control-label">Principal *</label>
-                <div class="col-sm-7">
-                    <input type="text" name="meta[principal_name]" class="form-control" id="inputName" placeholder="Enter principal name" value="<?php echo set_value('meta[principal_name]'); ?>" required>
-                    <div class="help-block with-errors"></div>
-                </div>
-            </div>
+			<div class="row">
+							
+								
+				<div class="form-group col-sm-10 basic-info-area">
 			
-			<div class="form-group">
-		  		<label for="inputEmail" class="col-sm-3 control-label">Email  *</label>
-		  		<div class="col-sm-7">
-		  			<input type="email" name="email" class="form-control" id="inputEmail" placeholder="Enter email" value="<?php echo set_value('email'); ?>" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  title="example@gmail.com">
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-			
-			<div class="form-group">
-		  		<label for="inpuContact" class="col-sm-3 control-label">First Name *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="first_name" class="form-control" id="inpuContact" placeholder="Enter first name" value="<?php echo set_value('first_name');?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-			<div class="form-group">
-		  		<label for="inpuContact" class="col-sm-3 control-label">Last Name *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="last_name" class="form-control" id="inpuContact" placeholder="Enter last name" value="<?php echo set_value('last_name');?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-		  	
-			<div class="form-group">
-		  		<label for="inpuPhone" class="col-sm-3 control-label">Phone *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="meta[phone]" class="form-control" id="inpuPhone" placeholder="Enter phone" maxlength="10" data-minlength="10" value="<?php echo set_value('meta[phone]');?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-			
-			<div class="form-group">
-		  		<label for="inputAddress" class="col-sm-3 control-label">Address *</label>
-		  		<div class="col-sm-7">
-			  		<textarea name="meta[address]" class="form-control" id="inputAddress" placeholder="Enter address" required><?php echo set_value('meta[address]');?></textarea>
-			  		<div class="help-block with-errors"></div>
-			  	</div>
-		  	</div>
-			
-			<div class="form-group">
-		  		<label for="inpuCity" class="col-sm-3 control-label">City *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="meta[city]" class="form-control" id="inpuCity" placeholder="Enter city" value="<?php echo set_value('meta[city]'); ?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-			
-			<div class="form-group">
-		  		<label for="inpuState" class="col-sm-3 control-label">State *</label>
-		  		<div class="col-sm-7">
-		  			<input type="text" name="meta[state]" class="form-control" id="inpuState" placeholder="Enter state" value="<?php echo set_value('meta[state]')?>" required>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
+					<div class="form-group">
+						<label for="inputName" class="col-sm-3 control-label">School Name *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[school_name]" class="form-control" id="inputName" placeholder="Enter school name" value="<?php echo set_value('meta[school_name]'); ?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputName" class="col-sm-3 control-label">Principal *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[principal_name]" class="form-control" id="inputName" placeholder="Enter principal name" value="<?php echo set_value('meta[principal_name]'); ?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inputEmail" class="col-sm-3 control-label">Email  *</label>
+						<div class="col-sm-7">
+							<input type="email" name="email" class="form-control" id="inputEmail" placeholder="Enter email" value="<?php echo set_value('email'); ?>" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  title="example@gmail.com">
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inpuContact" class="col-sm-3 control-label">First Name *</label>
+						<div class="col-sm-7">
+							<input type="text" name="first_name" class="form-control" id="inpuContact" placeholder="Enter first name" value="<?php echo set_value('first_name');?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inpuContact" class="col-sm-3 control-label">Last Name *</label>
+						<div class="col-sm-7">
+							<input type="text" name="last_name" class="form-control" id="inpuContact" placeholder="Enter last name" value="<?php echo set_value('last_name');?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inpuPhone" class="col-sm-3 control-label">Phone *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[phone]" class="form-control" id="inpuPhone" placeholder="Enter phone" maxlength="10" data-minlength="10" value="<?php echo set_value('meta[phone]');?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inputAddress" class="col-sm-3 control-label">Address *</label>
+						<div class="col-sm-7">
+							<textarea name="meta[address]" class="form-control" id="inputAddress" placeholder="Enter address" required><?php echo set_value('meta[address]');?></textarea>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inpuCity" class="col-sm-3 control-label">City *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[city]" class="form-control" id="inpuCity" placeholder="Enter city" value="<?php echo set_value('meta[city]'); ?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="inpuState" class="col-sm-3 control-label">State *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[state]" class="form-control" id="inpuState" placeholder="Enter state" value="<?php echo set_value('meta[state]')?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inpuZip" class="col-sm-3 control-label">Zip code *</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[zip]" class="form-control" id="inpuZip" placeholder="Enter Zip code" value="<?php echo set_value('meta[zip]')?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inpuBeds" class="col-sm-3 control-label">BEDS</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[beds]" class="form-control" id="inpuBeds" placeholder="Enter BEDS" value="<?php echo set_value('meta[beds]')?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inpuNpsis" class="col-sm-3 control-label">NPSIS</label>
+						<div class="col-sm-7">
+							<input type="text" name="meta[npsis]" class="form-control" id="inpuNpsis" placeholder="Enter NPSIS" value="<?php echo set_value('meta[npsis]')?>" required>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputSchool" class="col-sm-3 control-label">Holiday Schedule *</label>
+						<div class="col-sm-7">
+							<select name="meta[holiday_schedule_id]" class="form-control" id="inputSchool" required>
+								<option value="" selected>Select Schedule</option>
+								<?php foreach ($schedules as $item) {?>
+								<option value="<?php echo $item->id;?>" <?php if (isset($school->meta['holiday_schedule_id']) && $school->meta['holiday_schedule_id'] == $item->id) {echo "selected";}?>><?php echo $item->name;?></option>
+								<?php }?>
+							</select>
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="inputSchool" class="col-sm-3 control-label">School Color </label>
+						<div class="col-sm-7">
+							<input id="full" class="school_color" name="meta[school_color]" value="<?php echo isset($school->meta['school_color']) ? $school->meta['school_color'] : '#777474';?>" />
+							<div class="help-block with-errors"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="" class="col-sm-3 control-label">Status</label>
+						<div class="col-sm-7">
+							<div class="radio">
+							<label for="checkboxActive">
+								<input type="radio" name="status" id="checkboxActive" value="active" checked>
+								Active
+							</label>
+							</div>
+							<div class="radio">
+							<label for="checkboxinactive">
+								<input type="radio" name="status" id="checkboxinactive" value="inactive" >
+								In-active
+							</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-6">
+							<button type="submit" class="btn btn-primary" id="school-sbmit-btn"><span class="glyphicon glyphicon-ok-sign"></span> Save School</button> or <a href="<?php echo base_url('app/schools');?>">Cancel</a>
+						</div>
+					</div>
+				</div>
+			</div>
 			
 			<!-- <div class="form-group">
 		  		<label for="inpuContact" class="col-sm-3 control-label">Contact Person</label>
@@ -130,139 +229,83 @@
 		  	</div> -->
     	</fieldset>
 	</div>
-	<div class="col-sm-5">
 
-		<fieldset>
-    		<legend>Others Info</legend>
 
-            <!-- ======== Start Code By Ahmed on 2019-09-25 =======  -->
-			<div class="form-group">
-				<label for="inputTitle" class="col-sm-2 control-label">Titles *</label>
-				<div class="col-sm-12">
-					<?php foreach($titles as $title) {?>
-						<div class="row">
-							<div class="col-sm-2">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="titles[]" <?php if(isset($school_titles[$title->id])) {echo "checked";}?> value="<?php echo $title->id;?>"> <?php echo $title->name;?>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<?php if ($title->grade_teachers == 1) {?>
-								<?php if(isset($school_titles[$title->id])) { ?>
-									<div class="form-group col-sm-10">
-										<div class="help-block with-errors"></div>
-										<?php foreach ($titleData as $tkey => $tval) {
-											foreach ($tval as $ikey => $ival) { 
-											if($ival['title_id'] == $title->id){ 
-											?>
-										<div class="col-sm-5">
-											<?php echo ($ival['grade_name']!='')?$ival['grade_name']:'--' ?>
-										</div>
-										<div class="col-sm-5">
-											<?php echo ($ival['teacher_name']!='')?$ival['teacher_name']:'--' ?>
-										</div>
-									<?php }}} ?>
+	
+	<div class="col-sm-4">
 
+      	<fieldset>
+    		<legend>Participants</legend>
+			<div class="row">
+							
+								
+								<div class="form-group col-sm-10 Participants-area">
+									<div class="col-sm-3">
+									
+									<select class="form-control form-control-Participants"  name= "participant_type[]">
+									
+										<option value="">Select Participant Type</option>
+											<?php foreach($plist as $key => $participant) {?>
+											<option value="<?php echo $participant->id;?>"><?php echo $participant->name;?></option>
+										<?php } ?>
+									</select>
 										<div class="help-block with-errors"></div>
 									</div>
-								<?php } ?>
-
-								<div class="form-group col-sm-10">
-									<div class="col-sm-5">
-										<select class="form-control" name="grades[<?php echo $title->id;?>][]">
-											<option value="">Select Grade</option>
+									<div class="col-sm-3">
+									<select class="form-control form-control-grades" name="grades_type[]">
+										<option value="">Select Grade</option>
 											<?php foreach($grades as $key => $grade) {?>
 											<option value="<?php echo $grade->id;?>"><?php echo $grade->name;?></option>
-											<?php }?>
-										</select>
+										<?php } ?>
+									</select>
 										<div class="help-block with-errors"></div>
 									</div>
-									<div class="col-sm-5">
-										<input type="text" class="form-control" name="teachers[<?php echo $title->id;?>][]" placeholder="Enter a teacher" value="">
+									<div class="col-sm-3">
+										<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a participant" value="">
 										<div class="help-block with-errors"></div>
 									</div>
 									<div class="col-sm-2">
 										<button type="button" class="btn btn-default addButton"><i class="glyphicon glyphicon-plus"></i></button>
 									</div>
 								</div>
-								
+
+
 								<!-- Template for row !!DO NOT DELETE!! -->
 								<div class="template hide">
 									
-										<div class="col-sm-5">
-											<select class="form-control" name="grades[<?php echo $title->id;?>][]" >
-												<option value="">Select Grade</option>
-												<?php foreach($grades as $key => $grade) {?>
-												<option value="<?php echo $grade->id;?>"><?php echo $grade->name;?></option>
-												<?php }?>
-											</select>
+										<div class="col-sm-3">
+										<select class="form-control form-control-Participants"  name= "participant_type[]" >
+										<option value="">Select Participant Type</option>
+											<?php foreach($plist as $key => $participant) {?>
+											<option value="<?php echo $participant->id;?>"><?php echo $participant->name;?></option>
+										<?php } ?>
+									</select>
 											<div class="help-block with-errors"></div>
 										</div>
-										<div class="col-sm-5">
-											<input type="text" class="form-control" name="teachers[<?php echo $title->id;?>][]" placeholder="Enter a teacher" value="">
+
+										<div class="col-sm-3">
+										<select class="form-control form-control-grades" name="grades_type[]">
+											<option value="">Select Grade</option>
+												<?php foreach($grades as $key => $grade) {?>
+												<option value="<?php echo $grade->id;?>"><?php echo $grade->name;?></option>
+											<?php } ?>
+										</select>
+											<div class="help-block with-errors"></div>
+										</div>
+										<div class="col-sm-3">
+											<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a participant" >
 											<div class="help-block with-errors"></div>
 										</div>
 									
 								</div>
-							<?php } ?>
-						</div>	
-						<p class="help-block"></p>
-					<?php }?>
-				</div>
-			</div>
-			<!-- ======== End of the 2019-09-25 =======  -->
-
-			<div class="form-group">
-		  		<label for="inputSchool" class="col-sm-3 control-label">Holiday Schedule *</label>
-		  		<div class="col-sm-7">
-					<select name="meta[holiday_schedule_id]" class="form-control" id="inputSchool" required>
-						<option value="" selected>Select Schedule</option>
-						<?php foreach ($schedules as $item) {?>
-						<option value="<?php echo $item->id;?>" <?php if (isset($school->meta['holiday_schedule_id']) && $school->meta['holiday_schedule_id'] == $item->id) {echo "selected";}?>><?php echo $item->name;?></option>
-						<?php }?>
-					</select>
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-
-			<div class="form-group">
-		  		<label for="inputSchool" class="col-sm-3 control-label">School Color </label>
-		  		<div class="col-sm-7">
-				    <input id="full" class="school_color" name="meta[school_color]" value="<?php echo isset($school->meta['school_color']) ? $school->meta['school_color'] : '#777474';?>" />
-		  			<div class="help-block with-errors"></div>
-		  		</div>
-		  	</div>
-
-			<div class="form-group">
-		  		<label for="" class="col-sm-3 control-label">Status</label>
-		  		<div class="col-sm-7">
-			  		<div class="radio">
-					  <label for="checkboxActive">
-					    <input type="radio" name="status" id="checkboxActive" value="active" checked>
-					    Active
-					  </label>
-					</div>
-					<div class="radio">
-					  <label for="checkboxinactive">
-					    <input type="radio" name="status" id="checkboxinactive" value="inactive" >
-					    In-active
-					  </label>
-					</div>
-				</div>
-			</div>
-
-		  	<div class="form-group">
-		  		<div class="col-sm-offset-3 col-sm-6">
-			  		<button type="submit" class="btn btn-primary" id="school-sbmit-btn"><span class="glyphicon glyphicon-ok-sign"></span> Save School</button> or <a href="<?php echo base_url('app/schools');?>">Cancel</a>
-			  	</div>
-		  	</div>
-
 		</fieldset>
-
 	</div>
+							
+								
+				
+				
+	
+	
 	<?php echo form_close();?>
 </div>
 
@@ -361,7 +404,7 @@ jQuery(document).ready(function(){
 		}
 	});
 	
-	jQuery('#school-sbmit-btn').on('click', function(e){
+	jQuery('#').on('click', function(e){
 		if(jQuery('input[type=checkbox]').is(':checked')){
 			jQuery('.checkbox').parent().removeClass('has-error has-danger');
 		}else{
@@ -370,7 +413,7 @@ jQuery(document).ready(function(){
 
 		e.preventDefault();
 		jQuery.ajax({
-			url: base_url+'app/schools/grade_teachers_validation',
+			//url: base_url+'app/schools/grade_teachers_validation',
 			data: $("#addTitle").serialize(),
 			type: 'post',
 			dataType:'json',

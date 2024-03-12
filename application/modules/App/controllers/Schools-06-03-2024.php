@@ -256,22 +256,11 @@ class Schools extends Application_Controller {
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|callback_check_email');
 
             // ======== Start Code By Ahmed on 2019-09-25 ======= //
-            // $this->form_validation->set_rules('titles[]', 'Titles', 'trim|required');
+            $this->form_validation->set_rules('titles[]', 'Titles', 'trim|required');
             // ======== End of the Code 2019-09-25 ====== //
 
-            // $titles = $this->input->post('participant_type');
-            // $grades = $this->input->post('grades_type');
-            // $teachers = $this->input->post('teacher');
-            // foreach ($titles as $key => $title_id) {
-            //     echo $title_id;
-            // }
-            // echo '<pre>'; print_r($titles);
-            // echo '<pre>'; print_r($grades);
-            // echo '<pre>'; print_r($teachers);die;
-
-
     		$this->form_validation->set_error_delimiters('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>', '</div>');
-             
+			
     		//if the form has passed through the validation
     		if ($this->form_validation->run())
     		{
@@ -290,12 +279,10 @@ class Schools extends Application_Controller {
     			);
 				
 				$meta = $this->input->post('meta');
-              
-                // echo '<pre>'; print_r($meta); die();
 
                 // ======== Start Code By Ahmed on 2019-09-25 ======= //
-                $titles = $this->input->post('participant_type');
-                $grades = $this->input->post('grades_type');
+                $titles = $this->input->post('titles');
+                $grades = $this->input->post('grades');
                 $teachers = $this->input->post('teachers');
                 // ======== End of the Code 2019-09-25 ====== //
 
@@ -341,63 +328,55 @@ class Schools extends Application_Controller {
     			}
     			redirect($this->url); */
 				//------------Start validation for grade and teacher field
-                // $title_key = array();
-                // for($k=0; $k < count($titles); $k++){
-                //     // $title_key[$titles[$k]] = $titles[$k];
-                //     foreach($grades as $title_id => $grade_inner){
-                //         // foreach($grade_inner as $index => $grade_id){
-                //             if($title_id == $titles[$k]){
-                //                 $title_key[] = $titles[$k];
-                //             }
-                //         // }
-                //     }
-                // }
+                $title_key = array();
+                for($k=0; $k < count($titles); $k++){
+                    // $title_key[$titles[$k]] = $titles[$k];
+                    foreach($grades as $title_id => $grade_inner){
+                        // foreach($grade_inner as $index => $grade_id){
+                            if($title_id == $titles[$k])
+{
+                                $title_key[] = $titles[$k];
+                            }
+                        // }
+                    }
+                }
                 // echo '<pre>'; print_r($title_key); die();
 
-                // $notemptyFlag = array();
-                // $temp = 0;
-                // $success = true;
-                // for($i=0; $i < count($title_key); $i++){
-                //     $temp = 0;
-                //     foreach($grades as $title_id => $grade_inner){
-                //         foreach($grade_inner as $index => $grade_id){
-                //             if($title_id == $title_key[$i]){
-                //                 // echo $title_id; echo $index;
-                //                 if(($grade_id != '') && ($teachers[$title_id][$index]) != ''){
-                //                     $temp++;
-                //                 } 
-                //             }
-                //         }
-                //     }
-                //     // echo $temp.'temp value';
-                //     $notemptyFlag[] = $temp;
-                // }
+                $notemptyFlag = array();
+                $temp = 0;
+                $success = true;
+                for($i=0; $i < count($title_key); $i++){
+                    $temp = 0;
+                    foreach($grades as $title_id => $grade_inner){
+                        foreach($grade_inner as $index => $grade_id){
+                            if($title_id == $title_key[$i]){
+                                // echo $title_id; echo $index;
+                                if(($grade_id != '') && ($teachers[$title_id][$index]) != ''){
+                                    $temp++;
+                                } 
+                            }
+                        }
+                    }
+                    // echo $temp.'temp value';
+                    $notemptyFlag[] = $temp;
+                }
 
                 // echo '<pre>'; print_r($notemptyFlag); die();
 
-                // for($j=0; $j<count($notemptyFlag); $j++){
-                //     if($notemptyFlag[$j] == 0){
-                //         $success = false;
-                //     }
-                // }
+                for($j=0; $j<count($notemptyFlag); $j++){
+                    if($notemptyFlag[$j] == 0){
+                        $success = false;
+                    }
+                }
 
                 // echo $emptyFlag; die();
-                
-                // if($success){
-                    // $user_id = $this->Admin_model->insert($this->tablename, $data)
-                    //     // Insert the Mata Data
-                    //     $this->Admin_model->replace_user_meta($user_id, $meta);
-                    $user_id = $this->Admin_model->insert($this->tablename, $data);
-                    // echo '<pre>'; print_r($user_id); die();
-                    
-                    // Insert the Meta Data
-                    $this->Admin_model->replace_user_meta($user_id, $meta);
-                        
-                    
-
+                if($success){
+                    if ($user_id = $this->Admin_model->insert($this->tablename, $data)) {
+                        // Insert the Mata Data
+                        $this->Admin_model->replace_user_meta($user_id, $meta);
                         // Add to school_titles
                         foreach ($titles as $key => $title_id) {
-                            $titleData = array ('school_id' => $user_id, 'participant_id' => $title_id);
+                            $titleData = array ('school_id' => $user_id, 'title_id' => $title_id);
                             $this->App_model->insert('school_titles', $titleData);
                         }
                         // Add Grades & Teachers
@@ -407,7 +386,7 @@ class Schools extends Application_Controller {
                                 if ($grade_id <> "") {
                                     $teacher_name = $teachers[$title_id][$index];
                                     
-                                    $teacher = array ('school_id' => $user_id, 'participant_id' => $title_id, 'grade_id' => $grade_id, 'name' => $teacher_name, 'created_by' => $this->session->userdata('id'),'created_on' => date('Y-m-d H:i:s'));
+                                    $teacher = array ('school_id' => $user_id, 'title_id' => $title_id, 'grade_id' => $grade_id, 'name' => $teacher_name, 'created_by' => $this->session->userdata('id'),'created_on' => date('Y-m-d H:i:s'));
                                     $this->App_model->insert('teachers', $teacher);
                                         
                                 }                       
@@ -415,25 +394,30 @@ class Schools extends Application_Controller {
                         }
                         // Send Email to users
                         $principal_name = $data['first_name']." ".$data['last_name'];
-                        // $this->load->library('mail_template');
-                        // $this->mail_template->new_user_email($principal_name, $data['email'], $password);
+                        $this->load->library('mail_template');
+                        $this->mail_template->new_user_email($principal_name, $data['email'], $password);
                         
                         $this->session->set_flashdata('message_type', 'success');
                         $this->session->set_flashdata('message', '<strong>Well done!</strong> School has been added successfully.');
-                    
+                    }else {
+                        $this->session->set_flashdata('message_type', 'danger');
+                        $this->session->set_flashdata('message', '<strong>Oh snap!</strong> Please try again.');
+                    }
                     redirect($this->url);
-                // }
-                
+                }else{
+                    $this->session->set_flashdata('message_type', 'danger');
+                    $this->session->set_flashdata('message', '<strong>Oh snap!</strong> Please enter at least one grade & teacher for the selected title.');
+                    redirect('/app/schools/add');   
+                }
                 //------------end of validation for grade and teacher field
     		} //validation run
     	}
 
-        // $data['titles'] = $this->App_model->get_title_list(array('deleted'=>0, 'status'=>'active'));
+        $data['titles'] = $this->App_model->get_title_list(array('deleted'=>0, 'status'=>'active'));
         
         $data['schedules'] = $this->App_model->get_schedule_list(array('deleted'=>0));
 
         $data['grades'] = $this->App_model->get_grade_list(array('deleted'=>0, 'role_token'=>'school_admin', 'status'=>'active'));
-        $data['plist'] = $this->App_model->get_participant_list(array('deleted'=>0, 'status'=>'active'));
 
     	$data['page'] = 'schools';
     	$data['page_title'] = SITE_NAME.' :: School Management &raquo; Add School';
@@ -461,7 +445,7 @@ class Schools extends Application_Controller {
 			$this->form_validation->set_rules('meta[holiday_schedule_id]', 'Holiday Schedule', 'trim|required');
 			
             // ======== Start Code By Ahmed on 2019-09-25 ======= //
-            // $this->form_validation->set_rules('titles[]', 'Titles', 'trim|required');
+            $this->form_validation->set_rules('titles[]', 'Titles', 'trim|required');
             // ======== End of the Code 2019-09-25 ====== //
             
      		$this->form_validation->set_error_delimiters('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>', '</div>');
@@ -482,9 +466,9 @@ class Schools extends Application_Controller {
 				$meta = $this->input->post('meta');
                 
                 // ======== Start Code By Ahmed on 2019-09-25 ======= //
-                // $titles = $this->input->post('titles');
-                // $grades = $this->input->post('grades');
-                // $teachers = $this->input->post('teachers');
+                $titles = $this->input->post('titles');
+                $grades = $this->input->post('grades');
+                $teachers = $this->input->post('teachers');
                 // ======== End of the Code 2019-09-25 ====== //
                 
                 $pic = $_FILES['profile_pic'];
@@ -579,45 +563,45 @@ class Schools extends Application_Controller {
 
      			redirect($this->url); */
 				//------------Start validation for grade and teacher field
-                // $title_key = array();
-                // for($k=0; $k < count($titles); $k++){
-                //     // $title_key[$titles[$k]] = $titles[$k];
-                //     foreach($grades as $title_id => $grade_inner){
-                //         // foreach($grade_inner as $index => $grade_id){
-                //             if($title_id == $titles[$k]){
-                //                 $title_key[] = $titles[$k];
-                //             }
-                //         // }
-                //     }
-                // }
+                $title_key = array();
+                for($k=0; $k < count($titles); $k++){
+                    // $title_key[$titles[$k]] = $titles[$k];
+                    foreach($grades as $title_id => $grade_inner){
+                        // foreach($grade_inner as $index => $grade_id){
+                            if($title_id == $titles[$k]){
+                                $title_key[] = $titles[$k];
+                            }
+                        // }
+                    }
+                }
                 // echo '<pre>'; print_r($title_key); die();
 
-                // $notemptyFlag = array();
-                // $temp = 0;
-                // $success = true;
-                // for($i=0; $i < count($title_key); $i++){
-                //     $temp = 0;
-                //     foreach($grades as $title_id => $grade_inner){
-                //         foreach($grade_inner as $index => $grade_id){
-                //             if($title_id == $title_key[$i]){
-                //                 // echo $title_id; echo $index;
-                //                 if(($grade_id != '') && ($teachers[$title_id][$index]) != ''){
-                //                     $temp++;
-                //                 } 
-                //             }
-                //         }
-                //     }
-                //     // echo $temp.'temp value';
-                //     $notemptyFlag[] = $temp;
-                // }
+                $notemptyFlag = array();
+                $temp = 0;
+                $success = true;
+                for($i=0; $i < count($title_key); $i++){
+                    $temp = 0;
+                    foreach($grades as $title_id => $grade_inner){
+                        foreach($grade_inner as $index => $grade_id){
+                            if($title_id == $title_key[$i]){
+                                // echo $title_id; echo $index;
+                                if(($grade_id != '') && ($teachers[$title_id][$index]) != ''){
+                                    $temp++;
+                                } 
+                            }
+                        }
+                    }
+                    // echo $temp.'temp value';
+                    $notemptyFlag[] = $temp;
+                }
 
                 // echo '<pre>'; print_r($notemptyFlag); die();
 
-                // for($j=0; $j<count($notemptyFlag); $j++){
-                //     if($notemptyFlag[$j] == 0){
-                //         $success = false;
-                //     }
-                // }
+                for($j=0; $j<count($notemptyFlag); $j++){
+                    if($notemptyFlag[$j] == 0){
+                        $success = false;
+                    }
+                }
 
                 // echo $emptyFlag; die();
                 if($success){

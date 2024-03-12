@@ -108,7 +108,7 @@ defined('DIR_CSS')      					OR define('DIR_CSS', 'assets/css/');
 defined('DIR_JS')      						OR define('DIR_JS', 'assets/js/');
 
 defined('CURRENCY_SYMBOL')      			OR define('CURRENCY_SYMBOL', '$');
-defined('RECORD_PER_PAGE')     	 			OR define('RECORD_PER_PAGE', 10);
+defined('RECORD_PER_PAGE')     	 			OR define('RECORD_PER_PAGE', 20);
 
 defined('DIR_PROFILE_PICTURE')      		OR define('DIR_PROFILE_PICTURE', 'assets/profile/');
 defined('DIR_PROFILE_PICTURE_THUMB')      	OR define('DIR_PROFILE_PICTURE_THUMB', 'assets/profile/thumb/');

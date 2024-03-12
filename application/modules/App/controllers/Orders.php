@@ -188,6 +188,16 @@ class Orders extends Application_Controller {
 			return ($a->meta['school_name'] <= $b->meta['school_name']) ? -1 : 1;
 		});
 		$data['schools'] = $schools;
+
+        // $school_id = $this->session->userdata('id');
+        // echo '<pre>';print_r($school_id);echo '</pre>';die();
+        // $titles = $this->App_model->get_school_titles($school_id);
+        // echo '<pre>';print_r($school_id);echo '</pre>';die();
+			// $data['titles'] = array();
+			// foreach ($titles as $key => $val) {
+			// 	$data['titles'][] = (object) array('id' => $key, 'name' => $val);
+			// }
+        $data['programs'] = $this->App_model->get_program_details();
 		//session from table
         $data['s_array'] = $this->App_model->get_sessions();
         //end
@@ -814,7 +824,8 @@ class Orders extends Application_Controller {
 			$coordinator_id 	= $this->clean_value($this->input->post('coordinator_id'));
             // echo '<pre>';print($coordinator_id);die;
 			$session_id     = $this->clean_value($this->input->post('session_id'));			
-			$program_id     = $this->clean_value($this->input->post('program_id'));			
+			$program_id     = $this->clean_value($this->input->post('program_id'));	
+            $work_plan_number     = $this->clean_value($this->input->post('work_plan_number'));		
 			// Check the title exists
 			//$school_id = $this->session->userdata('id');
 			if ($this->input->post('school_id')) {
@@ -838,7 +849,7 @@ class Orders extends Application_Controller {
 			
 			$this->output
 				->set_content_type('application/json')
-				->set_output(json_encode(array('success' => true, 'topics' => $topics, 'hour' => $hour, 'booking_date' => $booking_date, 'title_id' => $title_id, 'presenter_id' => $presenter_id, 'coordinator_id' => $coordinator_id, 'school_id' => $school_id, 'msg' => "", 'session_id' => $session_id,'program_id' => $program_id)));
+				->set_output(json_encode(array('success' => true, 'topics' => $topics, 'hour' => $hour, 'booking_date' => $booking_date, 'title_id' => $title_id, 'presenter_id' => $presenter_id, 'coordinator_id' => $coordinator_id, 'school_id' => $school_id, 'msg' => "", 'session_id' => $session_id,'program_id' => $program_id,'work_plan_number'=>$work_plan_number)));
 			return;
 		}
 	}
@@ -856,6 +867,7 @@ class Orders extends Application_Controller {
 			$topics = $this->input->post('topics[]');	
 			$session_id = $this->clean_value($this->input->post('session_id'));
             $program_id     = $this->clean_value($this->input->post('program_id'));	
+            $work_plan_number     = $this->clean_value($this->input->post('work_plan_number'));	
             if(!empty($program_id)){
                 $program_id=$program_id;
             }
@@ -930,7 +942,7 @@ class Orders extends Application_Controller {
                 'co_rate_type'		=> $co_rate_type,
 				'co_rate' 			=> $co_rate,
 				'session_id'        => $session_id,
-                
+                'work_plan_number'  => $work_plan_number,
                 'program_id' => $program_id
                
 
@@ -7553,4 +7565,29 @@ class Orders extends Application_Controller {
         }
     }
 
+    public function check_wp_status(){
+        $wp_no = $this->input->post('wp_no');
+        $wpNoStatus=$this->App_model->uniqueWpNo($wp_no);
+        // echo '<pre>';print($wpNoStatus);die;
+            if($wpNoStatus){
+                $this->output
+					->set_content_type('application/json')
+					->set_output(json_encode(array('success' => true)));
+				return;
+                // $this->output
+				// 	->set_content_type('application/json')
+				// 	->set_output(json_encode(array('success' => false, 'msg' => "Work plan number already exist.")));
+				// return;
+                
+            }else{
+                $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'msg' => "Work plan number already exist.")));
+            return;
+                // $this->output
+				// 	->set_content_type('application/json')
+				// 	->set_output(json_encode(array('success' => true)));
+				// return;
+            }
+    }
 }

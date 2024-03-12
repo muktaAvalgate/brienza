@@ -597,7 +597,7 @@ class Auth extends Application_Controller {
     }
     ## --------- End of the code ------------ ##    
 
-    public function agenda_schedule($var=null) 
+    public function agenda_schedule() 
     {
         // print_r($this->session->all_userdata());
         if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
@@ -609,21 +609,33 @@ class Auth extends Application_Controller {
         
         // Append the requested resource location to the URL   
         $url1.= $_SERVER['REQUEST_URI']; 
-        $path = parse_url($url1, PHP_URL_PATH); // Get the path part of the URL
-        $parts = explode('/', $path); // Split the path into parts
+        // $path = parse_url($url1, PHP_URL_PATH); // Get the path part of the URL
+        // $parts = explode('/', $path); // Split the path into parts
         
-        // Find the index of "status" in the parts array
-        $statusIndex = array_search('status', $parts);
+        // // Find the index of "status" in the parts array
+        // $statusIndex = array_search('status', $parts);
+        // $presenterIndex = array_search('presenter', $parts);
+        // $dateIndex = array_search('date', $parts);
         
-        if ($statusIndex !== false && isset($parts[$statusIndex + 1])) {
-            $statusValue = $parts[$statusIndex + 1]; // Get the value after "status"
-            // echo $statusValue;
-            $this->session->set_userdata('pagination_status',str_replace('+',' ',$statusValue));
-            // echo '<pre>';print_r(str_replace('+',' ',$statusValue));die;
-        } else {
-            $this->session->set_userdata('pagination_status',null);
-            // echo "Status not found in the URL.";
-        }    
+        // if ($statusIndex !== false && isset($parts[$statusIndex + 1])) {
+        // $statusValue = $parts[$statusIndex + 1]; // Get the value after "status"
+        // // echo $statusValue;
+        // $this->session->set_userdata('filtered_status',str_replace('+',' ',$statusValue));
+        // // echo '<pre>';print_r(str_replace('+',' ',$statusValue));die;
+        // } else {
+        // $this->session->set_userdata('filtered_status',null);
+        // // echo "Status not found in the URL.";
+        // }  
+
+        // if ($presenterIndex !== false && isset($parts[$presenterIndex + 1])) {
+        // $statusValue = $parts[$presenterIndex + 1]; // Get the value after "presenter"
+        // // echo $statusValue;
+        // $this->session->set_userdata('filtered_presenter',$statusValue);
+        // // echo '<pre>';print_r(str_replace('+',' ',$statusValue));die;
+        // } else {
+        // $this->session->set_userdata('filtered_presenter',null);
+        // // echo "Status not found in the URL.";
+        // }    
         
         $key = 'sessionSort';
         $key2 = 'statusSort';
@@ -668,25 +680,31 @@ class Auth extends Application_Controller {
         if ($uri['date'] <> "" && $uri['date'] <> "~") {
             $filter['date'] =  str_replace('~', '/', $uri['date']);
 			$pegination_uri['date'] = $uri['date']; 
+            $this->session->set_userdata('filtered_date',$filter['date']);
         } else {
 			$filter['date'] = "";
 			$pegination_uri['date'] = "~";
+            $this->session->set_userdata('filtered_date',null);
 		}
 
         if ($uri['presenter'] <> "" && $uri['presenter'] <> "~") {
             $filter['presenter'] = $uri['presenter'];
 			$pegination_uri['presenter'] = $uri['presenter'];
+            $this->session->set_userdata('filtered_presenter',$uri['presenter']);
         } else {
 			$filter['presenter'] = "";
 			$pegination_uri['presenter'] = "~";
+            $this->session->set_userdata('filtered_presenter',null);
 		}
 
         if ($uri['status'] <> "" && $uri['status'] <> "~") {
             $filter['status'] = $uri['status'];
 			$pegination_uri['status'] = $uri['status'];
+            $this->session->set_userdata('filtered_status',$uri['status']);
         } else {
 			$filter['status'] = "";
 			$pegination_uri['status'] = "~";
+            $this->session->set_userdata('filtered_status',null);
 		}
         
 
@@ -711,6 +729,7 @@ class Auth extends Application_Controller {
         
         // Get the total rows without limit
         $curSe=$this->session->userdata('curr_session_id');
+        // echo '<pre>'; print_r($curSe);die;
         // if($var != null){
         //     $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, false,$curSe);
         //     return $total_rows;
@@ -865,19 +884,31 @@ class Auth extends Application_Controller {
 
     public function convertToCsv(){
         
-          
-        $pagination_status=$this->session->userdata('pagination_status');    
-        if($pagination_status != null){
-            $filter['status']=$pagination_status;
+        $filtered_status=$this->session->userdata('filtered_status');    
+        $filtered_presenter=$this->session->userdata('filtered_presenter');    
+        $filtered_date=$this->session->userdata('filtered_date');    
+        if($filtered_status != null){
+            $filter['status']=$filtered_status;
         }else{
-            $filter=null;
+            $filter['status']=null;
         }
-    // echo '<pre>';print_r($statusValue);die;
+        if($filtered_presenter != null){
+            $filter['presenter']=$filtered_presenter;
+        }else{
+            $filter['presenter']=null;
+        }
+        if($filtered_date != null){
+            $filter['date']=$filtered_date;
+        }else{
+            $filter['date']=null;
+        }
+
+// echo '<pre>';print_r($statusValue);die;
     // Get the total rows without limit
-    $curSe=$this->session->userdata('curr_session_id');
+        $curSe=$this->session->userdata('curr_session_id');
    
         $total_rows     = $this->Auth_model->get_agenda_schedule($filter, null, null, false,$curSe);
-//    echo '<pre>';print_r($total_rows);die;
+        //    echo '<pre>';print_r($total_rows);die;
         $blankArray = array();
         $scheduleArray = array();
 
@@ -887,12 +918,9 @@ class Auth extends Application_Controller {
             $blankArray['total_hours'] = $row->total_hours;
             $blankArray['presenter_name'] = $row->presenter_name;
             $blankArray['status'] = $row->status;
-            // $blankArray['teacher'] = $row->teacher;
-            
-            // echo $row->teacher;
+           
             array_push($scheduleArray,$blankArray);
         }
-        // echo '<pre>';print_r($scheduleArray);die;
 
         if (count($total_rows)>0){
             $filename = 'Schedule_list_'.date("Y-m-d h:i:s").'.csv';

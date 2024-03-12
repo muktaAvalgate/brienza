@@ -1184,7 +1184,7 @@ class Auth_model extends CI_Model {
 		// $previous_year = date("Y",strtotime("-1 year")); // added 10-01-2022
 		// $agenda_schedule_date = $previous_year.'-09-01';  // added 10-01-2022
 		// // $agenda_schedule_date = $dateArray[0]->start_date.$dateArray[0]->end_date;  
-		// echo '<pre>';print_r($agenda_schedule_date);die;
+		// echo '<pre>';print_r($dateArray);die;
 		$this->db->select('order_assigned_presenters.presenter_id, order_schedules.*, CONCAT(users.first_name, " ", users.last_name) AS presenter_name, orders.order_no');
 		$this->db->from('order_assigned_presenters');
 		$this->db->join('order_schedules', 'order_schedules.created_by = order_assigned_presenters.presenter_id');

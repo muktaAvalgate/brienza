@@ -29,7 +29,7 @@
 
       	<fieldset>
     		<legend>Basic Info</legend>
-			
+			<?//php echo '<pre>'; print_r($schools);die; ?>
 			<?php if ($this->session->userdata('role') == 'administrator' || $this->session->userdata('role') == 'coordinator') {?>
 				<div class="form-group">
 					<label for="inputSchool" class="col-sm-3 control-label">School *</label>
@@ -155,9 +155,17 @@
 		  	</div>
 
 
+			  <div class="form-group">
+		  		<label for="inputWpNo" class="col-sm-3 control-label">Work Plan No  *</label>
+		  		<div class="col-sm-7">
+				  <input type="text" name="work_plan_number" id="work_plan_number" class="form-control" required/>
+		  			<div id="wp_no_error" class="help-block with-errors"></div>
+		  		</div>
+		  	</div>
+
 		  	<div class="form-group">
 		  		<div class="col-sm-offset-3 col-sm-6">
-			  		<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create Order</button> or <a href="<?php echo base_url('app/orders');?>">Cancel</a>
+			  		<button type="submit" id="create_order" class="btn btn-primary"><span class="glyphicon glyphicon-ok-sign"></span> Create Order</button> or <a href="<?php echo base_url('app/orders');?>">Cancel</a>
 			  	</div>
 		  	</div>
     	</fieldset>
@@ -189,6 +197,7 @@
 				<input type="hidden" name="school_id" id="school_id">
 				<input type="hidden" name="session_id" id="hdn_session_id">
 				<input type="hidden" name="program_id" id="program_value">
+				<input type="text" name="work_plan_number" id="wp_no">
 				
 				<button type="submit" class="btn btn-primary" id="btn_place_order">Confirm Order</button>
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -216,6 +225,10 @@
 <script type="text/javascript">
 	
 	$(document).ready(function(){
+
+		$('#create_order').prop('disabled', true);
+
+
 		$('#inputSchool').on('change', function(){
 			var school_id = $(this).val();
 			$.ajax({
@@ -289,6 +302,38 @@
 			var programVal=$(this).val();
 			// alert(programVal);
 			$('#program_value').val(programVal);
+		});
+		
+		$('#work_plan_number').on('keyup',function(){
+			$('#wp_no_error').html();
+			// $('#create_order').prop('disabled',true);
+			var programVal=$(this).val();
+			// alert(programVal);
+			$('#wp_no').val(programVal);
+			$.ajax({
+	            type:'POST',
+	            url: base_url+"app/orders/check_wp_status",
+	            dataType: "json",
+	            data:{wp_no: programVal},
+	            success:function(response){
+	            	// var html = '<option value="" selected="">Select Presenter</option>';
+	            	// $(response).each(function(index, value) { 
+					// 	html += '<option value="'+value.presenter_id+'">'+value.first_name+' '+value.last_name+'</option>'
+					// });
+
+	            	// $('#inputPresenter').html(html);
+					if(response.success){
+						// var html = '<div id="wp_no_error" class="help-block with-errors"></div>'
+						$('#wp_no_error').html('');
+						$('#create_order').prop('disabled',false);
+						
+						
+					}else{
+						$('#wp_no_error').html(response.msg).css('color', 'red');
+						$('#create_order').prop('disabled',true);
+					}
+	            }
+	        });
 		});
 
 	});
