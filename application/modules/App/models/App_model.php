@@ -1598,12 +1598,13 @@ class App_model extends CI_Model {
         $this->db->join('titles', 'teachers.title_id = titles.id', 'left');
         $this->db->join('user_meta', 'teachers.school_id = user_meta.user_id AND user_meta.meta_key = \'school_name\'');
         $this->db->where('teachers.school_id', $school_id);
-        $this->db->where('teachers.title_id', $title_id);
+        // $this->db->where('teachers.title_id', $title_id);
         $this->db->where('teachers.is_deleted', 0);
         if($group_by != ''){
             $this->db->group_by($group_by);
         }
         $query = $this->db->get();
+        // echo $this->db->last_query();die;
         return $query->result_array();
     }
     function check_schedule_timeBySchool($presenter_id = '', $date='', $order_id='', $school_id='') {
@@ -5725,6 +5726,21 @@ class App_model extends CI_Model {
         }else{
             return false;
         }
+    }
+
+    function get_participant_for_school($id)  {
+        $this->db->select('pt.*');
+		$this->db->from('orders');
+        $this->db->join('school_titles AS st', 'orders.school_id = st.school_id', 'left');
+        $this->db->join('participants AS pt', 'st.participant_id = pt.id', 'left');
+		$this->db->where('orders.school_id', $id);
+		$this->db->where('pt.status', 'active');
+		$this->db->where('pt.is_deleted', 0);
+        $this->db->group_by("pt.id");
+		// $query = $this->db->get();
+		// echo $this->db->last_query()."<br>";die;
+        $query = $this->db->get(); //echo $this->db->last_query()."<br>";
+        return $query->result();
     }
 }
 /* End of file user_model.php */

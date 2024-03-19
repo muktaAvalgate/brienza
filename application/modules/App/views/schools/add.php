@@ -1,26 +1,7 @@
 <style>
-/* .basic-info-area{
-	width: 590px;
-    margin-left: -33px;
-} */
-
-/* .form-horizontal .form-group {
-    margin-right: 0px;
-    margin-left: -12px;
-} */
-
-/* .Participants-area{
-	width: 555px;
-} */
-
-/* .form-control-Participants{
-	width: 130px;
-    padding: 0px;
+.titles-list-filed{
+    padding: 0px 2px;
 }
-
-.audit-info-list{
-	width: 493px;
-} */
 </style>
 
 <link rel="stylesheet" type="text/css" href="<?php echo base_url()?>assets/css/spectrum.css">
@@ -62,7 +43,7 @@
 		$attributes = array('class' => 'form-horizontal', 'id' => 'addTitle', 'role' => 'form', 'data-toggle' => 'validator');
 		echo form_open_multipart(base_url('app/schools/add'), $attributes);
       ?>
-	<div class="col-sm-4">
+	<div class="col-sm-6">
 
       	<fieldset>
     		<legend>Basic Info</legend>
@@ -232,7 +213,7 @@
 
 
 	
-	<div class="col-sm-4">
+	<div class="col-sm-6">
 
       	<fieldset>
     		<legend>Participants</legend>
@@ -240,7 +221,8 @@
 							
 								
 								<div class="form-group col-sm-10 Participants-area">
-									<div class="col-sm-3">
+									<div class="col-sm-4 titles-list-filed
+">
 									
 									<select class="form-control form-control-Participants"  name= "participant_type[]">
 									
@@ -251,7 +233,8 @@
 									</select>
 										<div class="help-block with-errors"></div>
 									</div>
-									<div class="col-sm-3">
+									<div class="col-sm-4 titles-list-filed
+">
 									<select class="form-control form-control-grades" name="grades_type[]">
 										<option value="">Select Grade</option>
 											<?php foreach($grades as $key => $grade) {?>
@@ -260,11 +243,12 @@
 									</select>
 										<div class="help-block with-errors"></div>
 									</div>
-									<div class="col-sm-3">
+									<div class="col-sm-3 titles-list-filed
+">
 										<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a participant" value="">
 										<div class="help-block with-errors"></div>
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-1 titles-list-filed">
 										<button type="button" class="btn btn-default addButton"><i class="glyphicon glyphicon-plus"></i></button>
 									</div>
 								</div>
@@ -273,7 +257,7 @@
 								<!-- Template for row !!DO NOT DELETE!! -->
 								<div class="template hide">
 									
-										<div class="col-sm-3">
+										<div class="col-sm-4 titles-list-filed">
 										<select class="form-control form-control-Participants"  name= "participant_type[]" >
 										<option value="">Select Participant Type</option>
 											<?php foreach($plist as $key => $participant) {?>
@@ -283,7 +267,8 @@
 											<div class="help-block with-errors"></div>
 										</div>
 
-										<div class="col-sm-3">
+										<div class="col-sm-4 titles-list-filed
+">
 										<select class="form-control form-control-grades" name="grades_type[]">
 											<option value="">Select Grade</option>
 												<?php foreach($grades as $key => $grade) {?>
@@ -292,7 +277,8 @@
 										</select>
 											<div class="help-block with-errors"></div>
 										</div>
-										<div class="col-sm-3">
+										<div class="col-sm-3 titles-list-filed
+">
 											<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a participant" >
 											<div class="help-block with-errors"></div>
 										</div>
@@ -326,7 +312,7 @@ jQuery(document).ready(function() {
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            jQuery(wrapper).append('<div class="col-sm-2"></div><div class="form-group col-sm-10 col-md-offset-2">' + jQuery(template).html() + '<div class="col-sm-2"><button type="button" class="btn btn-default removeButton"><i class="glyphicon glyphicon-minus"></i></button></div></div></div>'); 
+            jQuery(wrapper).append('<div class="col-sm-2"></div><div class="form-group col-sm-10 col-md-offset-2">' + jQuery(template).html() + '<div class="col-sm-1 titles-list-filed"><button type="button" class="btn btn-default removeButton"><i class="glyphicon glyphicon-minus"></i></button></div></div></div>'); 
 			//add input box
         }
 		

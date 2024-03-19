@@ -171,6 +171,7 @@ class Orders extends Application_Controller {
 
     	// print "<pre>"; print_r($data['orders']);print "</pre>";die;
 		$data['filter'] = $filter;
+        $data['titles'] = $this->App_model->get_title_list(array('deleted'=>0, 'status'=>'active'));
 	
 		$this->load->model('../../Admin/models/Admin_model');
 		//$data['schools'] = $this->App_model->get_school_list(array('deleted'=>0));
@@ -324,6 +325,7 @@ class Orders extends Application_Controller {
     		$order_id = $this->input->post('order_id');
 
     	$data['order_details'] 		= $this->App_model->get_specific_order($order_id);
+        // echo '<pre>';print_r($data['order_details']['title_id']);die;
     	$get_assignment_details		= $this->App_model->get_specific_assignment($order_id);
 
     	if(!empty($get_assignment_details))
@@ -354,8 +356,8 @@ class Orders extends Application_Controller {
             $data['presenter_full_list']    = $this->App_model->get_assignable_presenters($data['coordinator_id']);
         }
 
-    	$data['grade_list']			= $this->App_model->get_school_teacher($data['order_details']['school_id'], $data['order_details']['title_id']);
-
+    	$data['grade_list']			= $this->App_model->get_school_teacher($data['order_details']['school_id'], $data['order_details']['title_id'],'grades.id');
+        // echo '<pre>';print_r($data['grade_list']);die;
     	// After the form submission 
 		if ($this->input->server('REQUEST_METHOD') === 'POST')
     	{
@@ -680,14 +682,14 @@ class Orders extends Application_Controller {
             {
                 //form validation
                 $this->form_validation->set_rules('order_no', 'Order number', 'required');
-                $this->form_validation->set_rules('work_plan_number', 'Work plan number', 'required');
+                // $this->form_validation->set_rules('work_plan_number', 'Work plan number', 'required');
                 //if the form has passed through the validation
                 if ($this->form_validation->run())
                 {
                     $data_to_store = array(
                         'status' => $status,
                         'order_no'          => $this->input->post('order_no'),
-                        'work_plan_number'  => $this->input->post('work_plan_number')
+                        // 'work_plan_number'  => $this->input->post('work_plan_number')
                         );
             
             
@@ -3249,9 +3251,10 @@ class Orders extends Application_Controller {
 
 	public function get_assign_school_titles(){
 		$school_id = $this->input->post('school_id');
-
+        // echo '<pre>';print($school_id);echo '</pre>';
 		// $res = $this->App_model->get_school_titles($school_id);
         $res = $this->App_model->get_school_titles_without_inactive($school_id);
+        // echo '<pre>';print_r($res);echo '</pre>';
 		$resArr = array();
 		if(!empty($res)){
 			foreach ($res as $key => $val) {
@@ -7589,5 +7592,54 @@ class Orders extends Application_Controller {
 				// 	->set_output(json_encode(array('success' => true)));
 				// return;
             }
+    }
+
+    //for update order details
+    public function updateOrderDetails() {
+        $details = $this->input->post('data');
+        // echo '<pre>';print_r($details);die;
+
+        $data=array(
+        'order_no'=>$details[1],
+        'work_plan_number'=>$details[2],
+        'school_id'=>$details[3],
+        'title_id'=>$details[4],
+        'booking_date'=>$details[5],
+        'program_id'=>$details[6]
+        );
+        $updatestatus = $this->App_model->update('orders','id',$details[0],$data);
+        if($updatestatus){
+            // $this->session->set_flashdata('message_type', 'success');
+    		// $this->session->set_flashdata('message', '<strong>Well done!</strong> Order details successfully updated.');
+            $this->output
+					->set_content_type('application/json')
+					->set_output(json_encode(array('success' => true , 'msg' => 'Order updated successfully')));
+				return;
+		}else{
+			// $this->session->set_flashdata('message_type', 'danger');
+    		// $this->session->set_flashdata('message', '<strong>Opps!</strong> Somthing went wrong please try again.');
+            $this->output
+					->set_content_type('application/json')
+					->set_output(json_encode(array('success' => false , 'msg' => 'Order')));
+				return;
+		}
+    }
+
+    // for cancel orders
+    function cancelOrders()  {
+        $orderIds = $this->input->post('data');
+        // echo '<pre>';print_r($orderIds);die;
+        $data['status'] = 'cancelled';
+        foreach ($orderIds as $orderId) {
+            $updatestatus = $this->App_model->update('orders','id',$orderId,$data);
+        }
+        if ($updatestatus){
+            $this->session->set_flashdata('message_type', 'success');
+    		$this->session->set_flashdata('message', '<strong>Well done!</strong> Order(s) successfully cancelled.');
+            $this->output
+					->set_content_type('application/json')
+					->set_output(json_encode(array('success' => true , 'msg' => 'Orders Cancelled successfully')));
+				return;
+        }
     }
 }

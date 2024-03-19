@@ -246,7 +246,6 @@ class Schools extends Application_Controller {
 
     	// Permission Checking
 		parent::checkMethodPermission($this->permissionValues[$this->router->method]);
-
     	//if save button was clicked, get the data sent via post
     	if ($this->input->server('REQUEST_METHOD') === 'POST')
     	{
@@ -258,16 +257,6 @@ class Schools extends Application_Controller {
             // ======== Start Code By Ahmed on 2019-09-25 ======= //
             // $this->form_validation->set_rules('titles[]', 'Titles', 'trim|required');
             // ======== End of the Code 2019-09-25 ====== //
-
-            // $titles = $this->input->post('participant_type');
-            // $grades = $this->input->post('grades_type');
-            // $teachers = $this->input->post('teacher');
-            // foreach ($titles as $key => $title_id) {
-            //     echo $title_id;
-            // }
-            // echo '<pre>'; print_r($titles);
-            // echo '<pre>'; print_r($grades);
-            // echo '<pre>'; print_r($teachers);die;
 
 
     		$this->form_validation->set_error_delimiters('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>', '</div>');
@@ -296,9 +285,12 @@ class Schools extends Application_Controller {
                 // ======== Start Code By Ahmed on 2019-09-25 ======= //
                 $titles = $this->input->post('participant_type');
                 $grades = $this->input->post('grades_type');
-                $teachers = $this->input->post('teachers');
+                $teachers = $this->input->post('teacher');
                 // ======== End of the Code 2019-09-25 ====== //
-
+                    // foreach ($titles as $key => $title_id) {
+                    //     echo '<pre>'; print($title_id);
+                    // }die;
+                // echo '<pre>'; print_r($teachers); print_r($grades); print_r($teachers); die;
     			//if the insert has returned true then we show the flash message
     			/* if ($user_id = $this->Admin_model->insert($this->tablename, $data)) {
 
@@ -397,21 +389,34 @@ class Schools extends Application_Controller {
 
                         // Add to school_titles
                         foreach ($titles as $key => $title_id) {
+                            if(!empty($title_id)){
                             $titleData = array ('school_id' => $user_id, 'participant_id' => $title_id);
                             $this->App_model->insert('school_titles', $titleData);
+                            }
                         }
                         // Add Grades & Teachers
-                        foreach ($grades as $title_id => $grade_inner) {
-                            foreach ($grade_inner as $index => $grade_id) {
+                        // foreach ($grades as $title_id => $grade_inner) {
+                        //     foreach ($grade_inner as $index => $grade_id) {
                                 
-                                if ($grade_id <> "") {
-                                    $teacher_name = $teachers[$title_id][$index];
+                        //         if ($grade_id <> "") {
+                        //             $teacher_name = $teachers[$title_id][$index];
                                     
-                                    $teacher = array ('school_id' => $user_id, 'participant_id' => $title_id, 'grade_id' => $grade_id, 'name' => $teacher_name, 'created_by' => $this->session->userdata('id'),'created_on' => date('Y-m-d H:i:s'));
-                                    $this->App_model->insert('teachers', $teacher);
+                        //             $teacher = array ('school_id' => $user_id, 'participant_id' => $title_id, 'grade_id' => $grade_id, 'name' => $teacher_name, 'created_by' => $this->session->userdata('id'),'created_on' => date('Y-m-d H:i:s'));
+                        //             $this->App_model->insert('teachers', $teacher);
                                         
-                                }                       
+                        //         }                       
+                        //     }
+                        // }
+
+                        //added on 18-03-2024 to insert grades and teachers by mukta
+                        for($i=0; $i<count($grades); $i++)
+                        {
+                            // echo $teachers[$i];
+                            if(!empty($titles[$i]) && !empty($teachers[$i]) && !empty($grades[$i])){
+                            $teacher = array ('school_id' => $user_id, 'participant_id' => $titles[$i], 'grade_id' => $grades[$i], 'name' => $teachers[$i], 'created_by' => $this->session->userdata('id'),'created_on' => date('Y-m-d H:i:s'));
+                            $this->App_model->insert('teachers', $teacher);
                             }
+                            // echo '<pre>'; print_r($teacher);
                         }
                         // Send Email to users
                         $principal_name = $data['first_name']." ".$data['last_name'];
@@ -451,7 +456,10 @@ class Schools extends Application_Controller {
 
 		// Permission Checking
 		parent::checkMethodPermission($this->permissionValues[$this->router->method]);
-
+        // $titles = $this->input->post('participant_type');
+        // $grades = $this->input->post('grades_type');
+        // $teachers = $this->input->post('teacher');
+        // echo '<pre>'; print_r($titles); print_r($grades); print_r($teachers);die;
      	if ($this->input->server('REQUEST_METHOD') === 'POST')
      	{
      		//form validation
@@ -480,7 +488,9 @@ class Schools extends Application_Controller {
     			);
 				
 				$meta = $this->input->post('meta');
-                
+                $titles = $this->input->post('participant_type');
+                $grades = $this->input->post('grades_type');
+                $teachers = $this->input->post('teacher');
                 // ======== Start Code By Ahmed on 2019-09-25 ======= //
                 // $titles = $this->input->post('titles');
                 // $grades = $this->input->post('grades');
@@ -620,6 +630,7 @@ class Schools extends Application_Controller {
                 // }
 
                 // echo $emptyFlag; die();
+                $success=true;
                 if($success){
                     //if the insert has returned true then we show the flash message
                     if ($this->Admin_model->update($this->tablename, 'id', $id, $data)) {
@@ -630,16 +641,33 @@ class Schools extends Application_Controller {
                         // ======== Start Code By Ahmed on 2019-09-25 ======= //
                         // Add to school_titles
                         //first delete then insert
-                        // $titledelRes = $this->App_model->deleteData('school_titles', 'school_id',$id);
-                        // if($titledelRes){
-                        //     foreach ($titles as $key => $title_id) {
-                        //         $titleData = array ('school_id' => $id, 'title_id' => $title_id);
-                        //         $this->App_model->insert('school_titles', $titleData);
-                        //     }
-                        // }
+                        $titledelRes = $this->App_model->deleteData('school_titles', 'school_id',$id);
+                        if($titledelRes){
+                            foreach ($titles as $key => $title_id) {
+                                if(!empty($title_id)){
+                                $titleData = array ('school_id' => $id, 'participant_id' => $title_id,'updated_by' => $this->session->userdata('id'),'updated_on' => date('Y-m-d H:i:s'));
+                                $this->App_model->insert('school_titles', $titleData);
+                                }
+                            }
+    
+                        }
 
+                        $titledelRes = $this->App_model->deleteData('teachers', 'school_id',$id);
+                        if($titledelRes){
+                            for($i=0; $i<count($grades); $i++)
+                        {
+                            // echo $teachers[$i];
+                            if(!empty($titles[$i]) && !empty($teachers[$i]) && !empty($grades[$i])){
+                            $teacher = array ('school_id' => $id, 'participant_id' => $titles[$i], 'grade_id' => $grades[$i], 'name' => $teachers[$i], 'updated_by' => $this->session->userdata('id'),'updated_on' => date('Y-m-d H:i:s'));
+                            $this->App_model->insert('teachers', $teacher);
+                            }
+                            // echo '<pre>'; print_r($teacher);
+                        }
+
+                        }
                         // start new implementation of deletion of school_titles backup
                         // updating existing records
+                       /* ------------
                         $data_delete = array(
                             'is_deleted' => 1,
                             'updated_by' => $this->session->userdata('id'),
@@ -702,6 +730,7 @@ class Schools extends Application_Controller {
                                 }
                             }
                         }
+                        ----------*/
                         // ======== End of the Code 2019-09-25 ====== //
     
                         $this->session->set_flashdata('message_type', 'success');
@@ -720,9 +749,11 @@ class Schools extends Application_Controller {
      		} //validation run
      	}
 
-     	$data['school'] = $this->Admin_model->get_user_details($id);
-		
-        //print "<pre>";print_r($data);die;
+     	$data['school'] = $this->Admin_model->get_user_details($id,'school_edit');
+        //  foreach($data['school']->participants as $key => $item) {
+        //     echo $item->participant_id;
+        //  }die;
+        // print "<pre>";print_r($data['school']);die;
      	if (!is_numeric($id) || $id == 0 || empty($data['school'])) {
      		redirect('/app/schools');
      	}
@@ -736,7 +767,7 @@ class Schools extends Application_Controller {
         }
 
         $data['titles'] = $this->App_model->get_title_list(array('deleted'=>0, 'status'=>'active'));
-        
+        $data['plist'] = $this->App_model->get_participant_list(array('deleted'=>0, 'status'=>'active'));
         $data['grades'] = $this->App_model->get_grade_list(array('deleted'=>0, 'role_token'=>'school_admin', 'status'=>'active'));
 
 		$data['schedules'] = $this->App_model->get_schedule_list(array('deleted'=>0));
@@ -891,7 +922,7 @@ class Schools extends Application_Controller {
             'is_deleted' => 1
         );
 
-      	if ($this->App_model->update($this->tablename, 'id', $id, $data_to_store)) {
+      	if ($this->App_model->update($this->tablename, 'id', $id, $data_to_store) && $this->App_model->update('school_titles', 'school_id', $id, $data_to_store) && $this->App_model->update('teachers', 'school_id', $id, $data_to_store) ){
             $this->session->set_flashdata('message_type', 'success');
     		$this->session->set_flashdata('message', '<strong>Well done!</strong> Schhol successfully deleted.');
         } else {

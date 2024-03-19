@@ -157,31 +157,6 @@
 		  		</div>
 		  	</div>
 			
-			  <div class="form-group">
-						<label for="inpuZip" class="col-sm-3 control-label">Zip code *</label>
-						<div class="col-sm-7">
-							<input type="text" name="meta[zip]" class="form-control" id="inpuZip" placeholder="Enter Zip code"  value="<?php if(isset($school->meta['zip'])) {echo $school->meta['zip'];}?>"required>
-							<div class="help-block with-errors"></div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="inpuBeds" class="col-sm-3 control-label">BEDS</label>
-						<div class="col-sm-7">
-							<input type="text" name="meta[beds]" class="form-control" id="inpuBeds" placeholder="Enter BEDS"  value="<?php if(isset($school->meta['beds'])) {echo $school->meta['beds'];}?>" required>
-							<div class="help-block with-errors"></div>
-						</div>
-					</div>
-
-					<div class="form-group">
-						<label for="inpuNpsis" class="col-sm-3 control-label">NPSIS</label>
-						<div class="col-sm-7">
-							<input type="text" name="meta[npsis]" class="form-control" id="inpuNpsis" placeholder="Enter NPSIS"  value="<?php if(isset($school->meta['npsis'])) {echo $school->meta['npsis'];}?>"required>
-							<div class="help-block with-errors"></div>
-						</div>
-					</div>
-
-
 			<!-- <div class="form-group">
 		  		<label for="inpuContact" class="col-sm-3 control-label">Contact Person</label>
 		  		<div class="col-sm-7">
@@ -245,41 +220,8 @@
     		<legend>Participants</legend>
 			<div class="row titles-list">
 							
-								<?php $count=count($school->participants); 
-								if($count>0) {
-								foreach($school->participants as $key => $item) {?>
+								
 								<div class="form-group col-sm-10 Participants-area">
-									<div class="col-sm-4 titles-list-filed">
-									<select class="form-control form-control-Participants"  name= "participant_type[]">
-									
-										<option value="">Select Participant Type</option>
-											<?php foreach($plist as $key => $participant) {?>
-											<option value="<?php echo $participant->id;?>" <?php if($participant->id == $item->participant_id) echo "selected";?>><?php echo $participant->name;?></option>
-										<?php } ?>
-									</select>
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="col-sm-4 titles-list-filed">
-									<select class="form-control form-control-grades" name="grades_type[]">
-										<option value="">Select Grade</option>
-											<?php foreach($grades as $key => $grade) {?>
-											<option value="<?php echo $grade->id;?>" <?php if($grade->id == $item->grade_id) echo "selected";?>><?php echo $grade->name;?></option>
-										<?php } ?>
-									</select>
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="col-sm-3 titles-list-filed">
-										<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a teacher" value="<?php echo $item->name; ?>">
-										<div class="help-block with-errors"></div>
-									</div>
-									<!-- <?//php if($count==1){ ?> -->
-									<div class="col-sm-1 titles-list-filed">
-										<button type="button" class="btn btn-default removeButton"><i class="glyphicon glyphicon-minus"></i></button>
-									</div>
-									<!-- <?//php } else?> -->
-								</div>
-								<?php } }?>
-									<div class="form-group col-sm-10 Participants-area">
 									<div class="col-sm-4 titles-list-filed">
 									<select class="form-control form-control-Participants"  name= "participant_type[]">
 									
@@ -303,14 +245,10 @@
 										<input type="text" class="form-control form-control-Participants" name="teacher[]" placeholder="Enter a teacher" value="">
 										<div class="help-block with-errors"></div>
 									</div>
-									<!-- <?//php if($count==1){ ?> -->
 									<div class="col-sm-1 titles-list-filed">
 										<button type="button" class="btn btn-default addButton"><i class="glyphicon glyphicon-plus"></i></button>
 									</div>
-									<!-- <?//php } else?> -->
 								</div>
-								
-
 
 
 								<!-- Template for row !!DO NOT DELETE!! -->
@@ -363,13 +301,6 @@
 				<?php } else {echo "N/A";}?>
 			</p>
 
-			<p>
-				<span class="glyphicon glyphicon-info-sign"></span> Last login:
-				<?php if (!is_null($school->last_login)) {?>
-					<small><?php echo datetime_display($school->last_login);?></small>
-				<?php } else {echo "N/A";}?>
-			</p>
-
 			<p><a class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete the school?')" href="<?php echo base_url('app/schools/delete/'.$school->id);?>"><span class="glyphicon glyphicon-trash"></span> Delete this School</a></p>
 		</fieldset>
 	</div>
@@ -397,7 +328,7 @@ jQuery(document).ready(function() {
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            jQuery(wrapper).append('<div class="form-group col-sm-10 col-md-offset-2">' + jQuery(template).html() + '<div class="col-sm-1 titles-list-filed"><button type="button" class="btn btn-default removeButton"><i class="glyphicon glyphicon-minus"></i></button></div></div></div>'); 
+            jQuery(wrapper).append('<div class="form-group col-sm-10 col-md-offset-2">' + jQuery(template).html() + '<div class="col-sm-2"><button type="button" class="btn btn-default removeButton"><i class="glyphicon glyphicon-minus"></i></button></div></div></div>'); 
 			//add input box
         }
 		jQuery(".removeButton").on("click", function(e){ //user click on remove text

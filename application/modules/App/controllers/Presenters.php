@@ -974,7 +974,8 @@ class Presenters extends Application_Controller {
 		{
             // Get the types
 			$data['types'] = $this->App_model->get_worktype_list(array('deleted'=>0, 'status'=>'active')); 
-			$data['participant'] = $this->App_model->get_participant_list(array('deleted'=>0, 'status'=>'active')); 
+			$data['participant'] = $this->App_model->get_participant_for_school($school_id ); 
+			// echo '<pre>';print_r($data['participant']);echo '</pre>';die;
             // Get order details
 			if($this->session->userdata('role') == 'teacher')
             {

@@ -571,14 +571,16 @@ class Admin_model extends CI_Model {
      * @param $user_id
      * @return array
      */
-    function get_user_details($id) {
+    function get_user_details($id,$param=null) {
     	$id = (int) $id;
 
-    	$this->db->select('users.id, users.role_id, users.first_name, users.last_name, users.email, users.last_login, users.created_on, users.updated_on, users.status, roles.role_name, roles.role_token, users.created_by, CONCAT(users_created.first_name, " ", users_created.last_name) as created_by_name, users.updated_by, CONCAT(users_updated.first_name, " ", users_updated.last_name) as updated_by_name, users.email_link');
+    	$this->db->select('users.id, users.role_id, users.first_name, users.last_name, users.email, users.last_login, users.created_on, users.updated_on, users.status, roles.role_name, roles.role_token, users.created_by, CONCAT(users_created.first_name, " ", users_created.last_name) as created_by_name, users.updated_by, CONCAT(users_updated.first_name, " ", users_updated.last_name) as updated_by_name, users.email_link,users.last_login');
 		$this->db->from('users');
 		$this->db->join('roles', 'users.role_id = roles.id');
 		$this->db->join('users AS users_created', 'users.created_by = users_created.id', 'left');
 		$this->db->join('users AS users_updated', 'users.updated_by = users_updated.id', 'left');
+		// $this->db->join('teachers', 'teachers.school_id = users.id', 'left');
+		// $this->db->join('teachers', 'teachers.school_id = users.id', 'left');
 		$this->db->where('users.id', $id);
 		$this->db->where('users.is_deleted', 0);
 
@@ -588,6 +590,27 @@ class Admin_model extends CI_Model {
 		if(!empty($result)){
    			$result->meta = $this->get_user_meta($id);
    		}
+
+		if($param){
+		$teachers_query = $this->db->get_where('teachers', array('school_id' => $id));
+		$teachers = $teachers_query->result();
+		foreach ($teachers as $teacher) {
+			// Fetch the name of the participant using the participant_id
+			$this->db->select('name');
+			$this->db->from('participants');
+			$this->db->where('id', $teacher->participant_id);
+			$query = $this->db->get();
+			
+			// Append the participant name to the teacher object
+			if ($query->num_rows() > 0) {
+				// Append the participant name to the teacher object
+				$teacher->participant_name = $query->row()->name;
+			} 
+		}
+		
+		// Append teachers data to the result
+		$result->participants = $teachers;
+		}
    		return $result;
     }
 

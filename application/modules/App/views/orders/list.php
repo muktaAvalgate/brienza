@@ -4,6 +4,39 @@
 }
 .editable{
 	display: none;
+	text-overflow: ellipsis;
+    width: 130px;
+    white-space: nowrap;
+	height: 28px;
+}
+
+.editableorder{
+	width: 90px;
+}
+
+.editable-select{
+	width: 105px;
+}
+
+.error_text{
+	position: absolute;
+    margin-top: 2px;
+    font-size: 14px;
+}
+
+.savebtn{
+	margin-top: 15px;
+	z-index: 11;
+    position: relative;
+}
+
+.btn-warning{
+	margin-top: -30px;
+    margin-left: 59px;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 15px 10px !important;
 }
 
 </style>
@@ -213,7 +246,7 @@ else
 		$attributes = array('class' => 'form-inline status-form', 'id' => 'customer-status-form');
 		echo form_open($actionURL, $attributes);
 	?>
-<!-- <?//php echo '<pre>'; print_r($schools);die; ?> -->
+<!-- <?//php echo '<pre>'; print_r($orders);die; ?> -->
 	<div class="table-responsive">
 		<!-- Table -->
 	    <table class="table table-striped table-responsive table-hover" width="100%">
@@ -225,10 +258,11 @@ else
 					<th>School</th>
 					<th>Presenter(Req./ Assigned)</th>
 					<th>Title</th>
-					<th>Program</th>
+					
 					<th>Hours</th>
 					<!--<th>Hourly Rate</th>-->
 					<th>Order Date</th>
+					<th>Program</th>
 	          		<!--<th>Order Date</th>-->
 					<th>Status</th>
 					<?php if ($this->session->userdata('role') == 'administrator' || $this->session->userdata('role') == 'school_admin' || $this->session->userdata('role') == 'coordinator') {?>
@@ -246,66 +280,81 @@ else
 	            <tr>
 					<td><input type="checkbox" name="item_id[<?php echo $item->id;?>]" class="checkbox-item" value="Y"></td>
 					<td><a class="default_value_<?php echo $item->id ?>" href="<?php echo base_url('app/orders/billing/?order_id='.$item->id);?>"><?php echo $item->order_no;?></a><input class="editable edit_input_<?php echo $item->id ?>" type="text" value="<?php echo $item->order_no;?>"></td>
-	            	<td><span class="default_value_<?php echo $item->id ?>"><?php echo ($item->work_plan_number != '') ? $item->work_plan_number : 'N/A';?></span><input class="editable edit_input_<?php echo $item->id ?>" id="work_plan_number" type="text" value="<?php echo $item->work_plan_number;?>"><div id="wp_no_error" class="help-block with-errors"></div></td>
+	            	<td><span class="default_value_<?php echo $item->id ?>"><?php echo ($item->work_plan_number != '') ? $item->work_plan_number : 'N/A';?></span><input class="editable edit_input_<?php echo $item->id ?>" id="work_plan_number" type="text" value="<?php echo $item->work_plan_number;?>"><div  id="wp_no_error" class="error_text help-block with-errors"></div></td>
 	            	<td>
 						<span class="default_value_<?php echo $item->id ?>"><?php echo $item->school_name;?></span>
-						<select name="school_id" class="editable edit_input_<?php echo $item->id ?>" id="inputSchool" required>
+						<select name="school_id" class="editable edit_input_<?php echo $item->id ?>" id="inputSchool_<?php echo $item->id ?>" onchange="updateOtherDetails(<?php echo $item->id ?>)" required>
 							<option value="" selected>Select School</option>
 							<?php foreach ($schools as $sch) {?>
 								<option value="<?php echo $sch->id;?>" <?php if ($item->school_name == $sch->meta['school_name']) {echo "selected";}?>><?php echo $sch->meta['school_name'];?></option>
 							<?php }?>
 						</select>
 					</td>
-					<td><?php //echo $item->teacher_name;?><a class="default_value_<?php echo $item->id ?>" href="javascript:void(0);" title="<?php echo $item->id;?>" class="open_modal">View Presenter</a>
-					<span><select name="presenter_id" class="editable edit_input_<?php echo $item->id ?>" id="inputPresenter">
-						<option value="" selected>Select Presenter</option>
-						<?php foreach ($presenters as $pres) {?>
-							<option value="<?php echo $pres->id;?>" <?php if (set_value('presenter_id') == $pres->id) {echo "selected";}?>><?php echo $pres->first_name." ".$pres->last_name;?></option>
-						<?php }?>
-					</select></span>
+					<td><?php //echo $item->teacher_name;?><a class="open_modal" href="javascript:void(0);" title="<?php echo $item->id;?>" >View Presenter</a>
 				</td>
-					<td><span class="default_value_<?php echo $item->id ?>"><?php echo $item->title_name;?></span>
-					<select name="title_id" class="editable edit_input_<?php echo $item->id ?>" id="inputTitle" required>
+					<td><span id="title_name_<?php echo $item->id ?>" class="default_value_<?php echo $item->id ?>"><?php echo $item->title_name;?></span>
+					<select name="title_id" class="editable edit_input_<?php echo $item->id ?>" id="inputTitle_<?php echo $item->id ?>" required>
 						<option value="" selected>Select Title</option>
 						<?php foreach ($titles as $title) {?>
-							<option value="<?php echo $title->id;?>" <?php if (set_value('title_id') == $title->id) {echo "selected";}?>><?php echo $title->name;?></option>
+							<option value="<?php echo $title->id;?>" <?php if ($item->title_name == $title->name) {echo "selected";}?>><?php echo $title->name;?></option>
 						<?php }?>
-					</select>
+					</select><div id="title_error" class="error_text help-block with-errors"></div>
 				</td>
-					<?php if(!empty($item->programName)){?><td><span class="default_value_<?php echo $item->id ?>"><?php echo $item->programName;?></span><input class="editable edit_input_<?php echo $item->id ?>" type="text" value="<?php echo $item->programName;?>"></td>
-						<?php } else{ ?>
-						<td>N/A</td>
-					<?php } ?>
+					
 					<td><?php echo $item->hours;?></td>
 					<!--<td><?php echo price_display($item->hourly_rate);?></td>-->					
-					<td><span class="default_value_<?php echo $item->id ?>"><?php echo date_display($item->booking_date);?></span><input class="editable edit_input_<?php echo $item->id ?>" type="text" value="<?php echo $item->booking_date;?>"></td>
+					<td><span class="default_value_<?php echo $item->id ?>"><?php echo date_display($item->booking_date);?></span><input class="editable editableorder edit_input_<?php echo $item->id ?>" type="text" value="<?php echo $item->booking_date;?>"></td>
 					<!--<td><?php echo datetime_display($item->created_on);?></td>-->
-	            	<td><?php echo order_status_display($item->status);?></td>
+					<?php if(!empty($item->programName)){?><td>
+						<span  class="default_value_<?php echo $item->id ?>"><?php echo $item->programName;?></span>
+						<select name="program_id" class="editable edit_input_<?php echo $item->id ?>" id="inputProgram_<?php echo $item->id ?>">
+					  <option value="<?php echo null; ?>">None</option>
+						<?php foreach ($programs as $key ){ 
+							print($key->name);?>
+							
+							<option value="<?php echo $key->id;?>" <?php if ($item->program_id == $key->id) {echo "selected";}?>><?php echo $key->name;?></option>
+						<?php }?>
+					</select>
+					</td>
+						<?php } else{ ?>
+						<td><span class="default_value_<?php echo $item->id ?>">N/A </span>
+						<select name="program_id" class="editable edit_input_<?php echo $item->id ?>" id="inputProgram">
+					  <option value="<?php echo null; ?>">None</option>
+						<?php foreach ($programs as $key ){ 
+							print($key->name);?>
+							
+							<option value="<?php echo $key->id;?>" <?php if (set_value('program_id') == $key->id) {echo "selected";}?>><?php echo $key->name;?></option>
+						<?php }?>
+					</select>
+						</td>
+					<?php } ?>
+	            	<td class="status"><?php echo order_status_display($item->status);?></td>
 					<?php if ($this->session->userdata('role') == 'administrator' || $this->session->userdata('role') == 'school_admin' || $this->session->userdata('role') == 'coordinator') {?>
 	            	<td class="text-nowrap">
 					<span class="default_value_<?php echo $item->id ?>" onclick="editOrder(<?php echo $item->id; ?>);"><a  href="javascript:void(0);" id="editable editbtn_<?php echo $item->id; ?>" class="btn btn-success btn-xs "><span class="glyphicon glyphicon-ok-circle"></span> Edit</a></span>
-					<span class="editable edit_input_<?php echo $item->id ?>"><a id="savebtn_<?php echo $item->id; ?>" href="javascript:void(0);" title="<?php echo $item->id; ?>" class="btn btn-success btn-xs savebtn"><span class="glyphicon glyphicon-ok-circle"></span> Save & Cancel</a></span>
-					<br>
+					<span class="editable edit_input_<?php echo $item->id ?>"><a id="savebtn_<?php echo $item->id; ?>" href="javascript:void(0);" title="<?php echo $item->id; ?>" class="btn btn-success btn-xs savebtn" onclick="saveOrderDetails(<?php echo $item->id; ?>)"><span class="glyphicon glyphicon-ok-circle"></span> Save</a></span>
+					<span class="editable edit_input_<?php echo $item->id ?>"><a id="canceleditbtn_<?php echo $item->id; ?>" href="javascript:void(0);" title="<?php echo $item->id; ?>" class="btn btn-warning btn-xs " onclick="cancelEdit(<?php echo $item->id; ?>)"><span class=" glyphicon glyphicon-ban-circle"></span> Cancel</a></span>
+					
 						<?php
 							//echo render_action(array('delete'), $item->id);
 							if ($item->status == 'pending') {
 								if($this->session->userdata('role') == 'administrator')
 									{
 						?>
-										<a href="javascript:void(0);" title="<?php echo $item->id; ?>" class="btn btn-success btn-xs open_modal_approval"><span class="glyphicon glyphicon-ok-circle"></span> Approve</a>
+										<a href="javascript:void(0);" title="<?php echo $item->id; ?>" class="btn btn-success btn-xs open_modal_approval" id="approve_btn_<?php echo $item->id; ?>"><span class="glyphicon glyphicon-ok-circle"></span> Approve</a>
 						<?php
 									}
 									/*
 									echo anchor('/app/orders/change_status/approved/'.$item->id, '<span class="glyphicon glyphicon-ok-circle"></span> Approve', array('title' => 'Approve', 'class' => 'btn btn-success btn-xs open_modal_approval'));
 									*/
 
-								if($this->session->userdata('role') == 'administrator')
-									echo anchor('/app/orders/change_status/cancelled/'.$item->id, '<span class="glyphicon glyphicon-ban-circle"></span> Cancel', array('title' => 'Cancel', 'class' => 'btn btn-warning btn-xs'));
+								// if($this->session->userdata('role') == 'administrator')
+								// 	echo anchor('/app/orders/change_status/cancelled/'.$item->id, '<span class="glyphicon glyphicon-ban-circle"></span> Cancel', array('title' => 'Cancel', 'id'=>'cancel_btn_' .$item->id, 'class' => 'btn btn-warning btn-xs'));
 
 							}
 							if ($item->status == 'approved') {
 								if($this->session->userdata('role') == 'administrator')
-									echo anchor('/app/orders/assign_hours/'.$item->id, '<span class="glyphicon glyphicon-ok-circle"></span> Assign Hours', array('title' => 'Assign Hours', 'class' => 'btn btn-success btn-xs'));
+									echo anchor('/app/orders/assign_hours/'.$item->id, '<span class="glyphicon glyphicon-ok-circle "></span> Assign Hours', array('title' => 'Assign Hours','id'=>'assignhour_btn_'.$item->id, 'class' => 'btn btn-success btn-xs assign-hour'));
 						    }
 
 							if($this->session->userdata('role') == 'coordinator') 
@@ -335,8 +384,9 @@ else
 				<tr>
                 	<td colspan="16">
 						<?php echo render_buttons(array('delete'));?>
-						<!--<button name="operation" type="submit" id="btn_status_approve" value="approved" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-ok-circle"></span> Approve</button>
-						<button name="operation" type="submit" id="btn_status_cancel" value="cancelled" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancel</button>-->
+						
+						 <button name="operation" type="submit" id="btn_status_approve" value="approved" class="btn btn-warning btn-xs" style="height: 30.7px;" onclick="cancelOrder()"><span class="glyphicon glyphicon-ok-circle"></span> Cancel</button>
+						<!--<button name="operation" type="submit" id="btn_status_cancel" value="cancelled" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-ban-circle"></span> Cancel</button>-->
 					</td>
 				</tr>
 			</tfoot>
@@ -431,6 +481,21 @@ else
 	</div>
 </div>
 
+<!-- For loader -->
+<div class="loader_img" style="display:none;"> </div>
+<style type="text/css">
+  .loader_img {
+      position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(<?php echo base_url('assets/images/loader.gif'); ?>) center no-repeat #fff;
+    opacity: .6;
+  }
+</style>
+
 <script>
 	// $(document).ready(function(){
 	var prev_work_plan=$('#work_plan_number').val();
@@ -454,52 +519,63 @@ else
 		$("#order-search-form").submit();
 	}
 
-	// $('.editbtn').on('click',function(){
-	// // alert('clicked');
-	// var tid = $(this).attr('data-id');
-	// $('.default_value').css('display', 'none');
-	// $('.edit_input').css('display', 'block');
-
-	// });
-
 	function editOrder(id){
+		console.log();
 		$('.default_value_'+id).css('display', 'none');
 		$('.edit_input_'+id).css('display', 'block');
+		// $('.open_modal_approval, .btn-warning ').hide();
+		$('#approve_btn_'+id).hide();
+		$('#cancel_btn_'+id).hide();
+		// $('#assignhour_btn_'+id).hide();
+        
+		var school_id = $('#inputSchool_'+id).val();
+			console.log(school_id);
+			// For school title
+			// $.ajax({
+	        //     type:'POST',
+	        //     url: base_url+"app/orders/get_assign_school_titles",
+	        //     dataType: "json",
+	        //     data:{school_id: school_id},
+	        //     success:function(response){
+			// 		console.log(response);
+	        //     	var html = '<option value="" selected="">Select Title</option>';
+			// 		$(response).each(function(index, value) { 
+			// 		html += '<option value="'+value.id+'"';
+			// 		if ($('#title_name_'+id).text() === value.title) {
+			// 			html += ' selected';
+			// 		}
+			// 		html += '>'+value.title+'</option>';
+			// 	});
+
+			// 	$('#inputTitle_'+id).html(html);
+	        //     }
+	        // });
 	}
 
 	
-	$('#inputSchool').on('change', function(){
-		console.log('trigger');
-			var school_id = $(this).val();
-			$.ajax({
-	            type:'POST',
-	            url: base_url+"app/orders/get_assign_school_presenter",
-	            dataType: "json",
-	            data:{school_id: school_id},
-	            success:function(response){
-	            	var html = '<option value="" selected="">Select Presenter</option>';
-	            	$(response).each(function(index, value) { 
-						html += '<option value="'+value.presenter_id+'">'+value.first_name+' '+value.last_name+'</option>'
-					});
-
-	            	$('#inputPresenter').html(html);
-	            }
-	        });
+	// $('#inputSchool').on('change', function(){
+		function updateOtherDetails(id){
+		
+			var school_id = $('#inputSchool_'+id).val();
+			console.log(school_id);
+			
 			// For school title
-			$.ajax({
-	            type:'POST',
-	            url: base_url+"app/orders/get_assign_school_titles",
-	            dataType: "json",
-	            data:{school_id: school_id},
-	            success:function(response){
-	            	var html = '<option value="" selected="">Select Title</option>';
-	            	$(response).each(function(index, value) { 
-						html += '<option value="'+value.id+'">'+value.title+'</option>'
-					});
+			// $.ajax({
+	        //     type:'POST',
+	        //     url: base_url+"app/orders/get_assign_school_titles",
+	        //     dataType: "json",
+				
+	        //     data:{school_id: school_id},
+	        //     success:function(response){
+			// 		console.log(response);
+	        //     	var html = '<option value="" selected="">Select Title</option>';
+	        //     	$(response).each(function(index, value) { 
+			// 			html += '<option value="'+value.id+'">'+value.title+'</option>'
+			// 		});
 
-	            	$('#inputTitle').html(html);
-	            }
-	        });
+	        //     	$('#inputTitle_'+id).html(html);
+	        //     }
+	        // });
 			// // For school coordinator
 			// $.ajax({
 	        //     type:'POST',
@@ -515,7 +591,8 @@ else
 	        //     	$('#coordinator_id').html(html);
 	        //     }
 	        // });
-		});
+		// });
+			}
 
 		$('#work_plan_number').on('keyup',function(){
 			$('#wp_no_error').html();
@@ -554,7 +631,101 @@ else
 		});
 
 
+		function saveOrderDetails(id){
 
+                var selectedOption = $('#inputTitle_'+id + ' option:selected').text();
+                if (selectedOption === "Select Title" || $('#wp_no_error').text()) {
+                    // alert("No option selected");
+					$('#title_error').html('Please select a title').css('color', 'red');
+					console.log(selectedOption);
+					return false;
+                } else {
+                    // alert("Option selected: " + selectedOption);
+				// 	console.log(selectedOption);
+				// 	return;
+				// }
+			var values = [];
+			values.push(id);
+                $('.edit_input_'+id).each(function() {
+                    if ($(this).is('input') || $(this).is('select')) {
+                        values.push($(this).val());
+                    }
+                });
+				
+                console.log(values);
+
+				$.ajax({
+	            type:'POST',
+	            url: base_url+"app/orders/updateOrderDetails",
+	            dataType: "json",
+				beforeSend: function(){
+					$('#loader_img').show();
+				},
+	            data:{data: values},
+	            success:function(response){
+					// console.log(response);
+	            	// var html = '<option value="" selected="">Select Title</option>';
+	            	// $(response).each(function(index, value) { 
+					// 	html += '<option value="'+value.id+'">'+value.title+'</option>'
+					// });
+
+	            	// $('#inputTitle_'+id).html(html);
+					if(response.success==true){
+						alert(response.msg);
+					window.location.reload();
+	            }else{
+					alert(response.msg);
+				}
+			}
+	        });
+		}
+		}
+
+	function cancelOrder(){
+	alert('cancel');
+	var n = 0;
+	var orderIds = [];
+	$(".checkbox-item:checked").each(function() {
+	var itemId = $(this).attr("name").replace("item_id[", "").replace("]", "");
+	var status = $(this).closest("tr").find(".status").text();
+	if(status.trim() === "Pending"){
+		orderIds.push(itemId);
+	}else{
+		n++;
+	}
+	console.log("Item ID: " + itemId + ", Status: " + status);
+		
+    });
+	console.log(orderIds);
+	if(n >=1){
+		alert('Only Pending Status Data Is Allowed To Cancel');
+	}
+	$.ajax({
+	            type:'POST',
+	            url: base_url+"app/orders/cancelOrders",
+	            dataType: "json",
+				beforeSend: function(){
+					$('#loader_img').show();
+				},
+	            data:{data: orderIds},
+	            success:function(response){
+					if(response.success==true){
+						// alert(response.msg);
+					window.location.reload();
+	            }else{
+					alert(response.msg);
+				}
+			}
+	        });
+	}
+
+	function cancelEdit(id){
+		$('.default_value_'+id).css('display', 'block');
+		$('.edit_input_'+id).css('display', 'none');
+		$('#approve_btn_'+id).show();
+		$('#cancel_btn_'+id).show();
+		$('#assignhour_btn_'+id).show();
+	}
 	// });
 </script>
 
